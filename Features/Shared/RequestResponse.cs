@@ -2,67 +2,44 @@ namespace exam_system.Features.Shared;
 
 public class RequestResponse<T>
 {
-    public bool Success { get; set; }
-    public int StatusCode { get; set; }
-    public string Message { get; set; } = string.Empty;
-    public T? Data { get; set; }
-    public IDictionary<string, string[]>? Errors { get; set; }
+    public bool Success { get; init; }
+    public int StatusCode { get; init; }
+    public string Message { get; init; } = string.Empty;
+    public T? Data { get; init; }
+    public IDictionary<string, string[]>? Errors { get; init; }
 
-    public static RequestResponse<T> Ok(T data, string message = "Success", int statusCode = 200)
-    {
-        return new RequestResponse<T>
+    public static RequestResponse<T> Ok(
+        T data,
+        string message = "Success",
+        int statusCode = StatusCodes.Status200OK)
+        => new()
         {
             Success = true,
             StatusCode = statusCode,
             Message = message,
             Data = data
         };
-    }
 
-    public static RequestResponse<T> Created(T data, string message = "Created successfully")
-    {
-        return new RequestResponse<T>
+    public static RequestResponse<T> Created(
+        T data,
+        string message = "Created successfully")
+        => new()
         {
             Success = true,
-            StatusCode = 201,
+            StatusCode = StatusCodes.Status201Created,
             Message = message,
             Data = data
         };
-    }
 
-    public static RequestResponse<T> Fail(string message, int statusCode = 400, IDictionary<string, string[]>? errors = null)
-    {
-        return new RequestResponse<T>
-        {
-            Success = false,
-            StatusCode = statusCode,
-            Message = message,
-            Data = default,
-            Errors = errors
-        };
-    }
-}
-
-public class RequestResponse : RequestResponse<object>
-{
-    public static RequestResponse Ok(string message = "Success", int statusCode = 200)
-    {
-        return new RequestResponse
-        {
-            Success = true,
-            StatusCode = statusCode,
-            Message = message
-        };
-    }
-
-    public static new RequestResponse Fail(string message, int statusCode = 400, IDictionary<string, string[]>? errors = null)
-    {
-        return new RequestResponse
+    public static RequestResponse<T> Fail(
+        string message,
+        int statusCode = StatusCodes.Status400BadRequest,
+        IDictionary<string, string[]>? errors = null)
+        => new()
         {
             Success = false,
             StatusCode = statusCode,
             Message = message,
             Errors = errors
         };
-    }
 }
