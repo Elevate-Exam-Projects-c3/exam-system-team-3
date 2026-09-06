@@ -13,6 +13,6 @@ public class Question : BaseEntity
     public int OrderIndex { get; set; }
 
     // Navigations
-    public ICollection<QuestionOption> Options { get; set; } = new List<QuestionOption>();
-    public ICollection<StudentQuestionAnswer> Answers { get; set; } = new List<StudentQuestionAnswer>();
+    public HashSet<QuestionOption> Options { get; set; } = new HashSet<QuestionOption>();
+    public HashSet<StudentQuestionAnswer> Answers { get; set; } = new HashSet<StudentQuestionAnswer>();
 }
