@@ -19,6 +19,6 @@ public class Quiz : BaseEntity
     public DateTime? PublishedAt { get; set; }
 
     // Navigations
-    public ICollection<Question> Questions { get; set; } = new List<Question>();
-    public ICollection<QuizAttempt> Attempts { get; set; } = new List<QuizAttempt>();
+    public HashSet<Question> Questions { get; set; } = new HashSet<Question>();
+    public HashSet<QuizAttempt> Attempts { get; set; } = new HashSet<QuizAttempt>();
 }
