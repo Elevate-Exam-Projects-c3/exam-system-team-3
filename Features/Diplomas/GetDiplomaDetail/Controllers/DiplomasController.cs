@@ -1,31 +1,35 @@
 ﻿using exam_system.Features.Diplomas.GetDiplomaDetail;
+using exam_system.Features.Diplomas.GetDiplomaDetail.DTOs;
 using exam_system.Features.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace exam_system.Controllers;
 
 [ApiController]
 [Route("api/diplomas")]
-//[Authorize]
-[AllowAnonymous] 
+[Authorize(Roles = "Student")]
 public sealed class DiplomasController(ISender sender): ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> GetDiplomas(
+    public async Task<ActionResult<ApiResponse<PaginatedResult<DiplomaListItemResponse>>>> GetDiplomas(
                                                   [FromQuery] int pageIndex = 1,
                                                   [FromQuery] int pageSize = 10,
                                                   CancellationToken cancellationToken = default)
     {
-        var studentId = Guid.Parse("8f3c2a71-6d4e-4b92-a857-1c39e5d7f625");
-        //var studentIdClaim = User.FindFirst("sub")?.Value ?? User.FindFirst("userId")?.Value;
+        var studentIdClaim =
+                    User.FindFirst(ClaimTypes.NameIdentifier)?.Value ??
+                    User.FindFirst("sub")?.Value ??
+                    User.FindFirst("userId")?.Value;
+        if (!Guid.TryParse(studentIdClaim, out var studentId))
+        {
+            var response = RequestResponse<PaginatedResult<DiplomaListItemResponse>>
+                .Fail( "Unauthorized.",StatusCodes.Status401Unauthorized).ToApiResponse();
 
-        //if (!Guid.TryParse(studentIdClaim, out var studentId))
-        //{
-        //    var unauthorizedResponse = RequestResponse<object>.Fail("Unauthorized.", StatusCodes.Status401Unauthorized);
-        //    var unauthorizedApiResponse = unauthorizedResponse.ToApiResponse();
-        //    return StatusCode(unauthorizedApiResponse.StatusCode, unauthorizedApiResponse);
-        //}
+            return StatusCode(response.StatusCode, response);
+        }
+
 
         var query = new GetDiplomasQuery(studentId,pageIndex,pageSize);
         var result = await sender.Send(query,cancellationToken);

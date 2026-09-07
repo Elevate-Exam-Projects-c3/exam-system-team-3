@@ -1,6 +1,8 @@
-﻿namespace exam_system.Features.Diplomas.GetDiplomaDetail.Validation;
+﻿using exam_system.Features.Diplomas.GetDiplomaDetail;
 
-public class GetDiplomasQueryValidator : AbstractValidator<GetDiplomasQuery>
+namespace exam_system.Features.Diplomas.GetDiplomas.Validation;
+
+public sealed class GetDiplomasQueryValidator : AbstractValidator<GetDiplomasQuery>
 {
     public GetDiplomasQueryValidator()
     {
@@ -8,8 +10,6 @@ public class GetDiplomasQueryValidator : AbstractValidator<GetDiplomasQuery>
             .GreaterThan(0);
 
         RuleFor(x => x.PageSize)
-            .GreaterThan(0);
-        RuleFor(x => x.PageSize)
-        .InclusiveBetween(1, 100);
+            .InclusiveBetween(1, 100);
     }
 }

@@ -15,8 +15,9 @@ public sealed class GetDiplomasQueryHandler(AppDbContext dbContext)
     {
         //As a Student, I want to browse all published diploma programs, so that I can decide which one to pursue.
         var query = dbContext.Diplomas
-            .AsNoTracking()
-            .Where(diploma =>diploma.Quizzes.Any(quiz =>quiz.Status == QuizStatus.Published));
+          .AsNoTracking()
+          .Where(diploma => !diploma.IsDeleted)
+          .Where(diploma =>diploma.Quizzes.Any(quiz =>!quiz.IsDeleted && quiz.Status == QuizStatus.Published));
 
         var totalCount = await query.CountAsync(cancellationToken);
         
@@ -41,7 +42,8 @@ public sealed class GetDiplomasQueryHandler(AppDbContext dbContext)
                            ))),
 
                    TotalQuizzes = diploma.Quizzes.Count(quiz =>
-                       quiz.Status == QuizStatus.Published)
+                                  !quiz.IsDeleted &&
+                                  quiz.Status == QuizStatus.Published)
                })
             .ToListAsync(cancellationToken);
 
