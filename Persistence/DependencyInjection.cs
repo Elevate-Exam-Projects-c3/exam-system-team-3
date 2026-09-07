@@ -1,6 +1,7 @@
 using exam_system.Infrastructure;
 using exam_system.Persistence.Context;
 using exam_system.Persistence.DataAccess;
+using FluentValidation.AspNetCore;
 using System.Reflection;
 
 namespace exam_system.Persistence;
@@ -20,6 +21,12 @@ public static class DependencyInjection
 
         services.AddExceptionHandler<GlobalExceptionHandler>();
         services.AddProblemDetails();
+        services.AddMapster();
+        services.AddMediatR(cfg =>
+        {
+            cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+            cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
+        });
 
 
         services.AddMediatR(cfg =>
