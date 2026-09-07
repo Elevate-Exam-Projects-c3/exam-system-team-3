@@ -1,9 +1,3 @@
-using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using exam_system.Domain.Common;
-using exam_system.Persistence.Context;
-
 namespace exam_system.Persistence.DataAccess;
 
 public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
@@ -54,7 +48,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
         _dbSet.Update(entity);
     }
 
- 
+
     // Soft Delete - marks as deleted but keeps in database
     public void Delete(T entity)
     {

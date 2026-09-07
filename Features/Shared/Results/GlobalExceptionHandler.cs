@@ -1,5 +1,4 @@
 ﻿using exam_system.Features.Shared;
-using FluentValidation;
 using Microsoft.AspNetCore.Diagnostics;
 
 namespace exam_system.Infrastructure;
@@ -13,11 +12,6 @@ public sealed class GlobalExceptionHandler(
         Exception exception,
         CancellationToken cancellationToken)
     {
-        logger.LogError(
-            exception,
-            "Unhandled exception occurred. TraceId: {TraceId}",
-            httpContext.TraceIdentifier);
-
         if (exception is ValidationException validationException)
         {
             var errors = validationException.Errors
@@ -41,6 +35,11 @@ public sealed class GlobalExceptionHandler(
 
             return true;
         }
+
+        logger.LogError(
+            exception,
+            "Unhandled exception occurred. TraceId: {TraceId}",
+            httpContext.TraceIdentifier);
 
         var response = ApiResponse<object>.Fail(
             message: "An unexpected error occurred.",

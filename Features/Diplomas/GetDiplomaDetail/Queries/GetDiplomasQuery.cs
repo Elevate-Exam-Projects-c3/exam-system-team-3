@@ -1,7 +1,12 @@
-﻿using exam_system.Features.Diplomas.GetDiplomaDetail.DTOs;
-using exam_system.Features.Shared;
-using exam_system.Features.Shared.Results;
+﻿using exam_system.Features.Diplomas.GetDiplomas.DTOs;
 
-namespace exam_system.Features.Diplomas.GetDiplomaDetail;
+namespace exam_system.Features.Diplomas.GetDiplomas.Queries;
 
-public sealed record GetDiplomasQuery(Guid StudentId, int PageIndex = 1,int PageSize = 10): IRequest<Result<PaginatedResult<DiplomaListItemResponse>>>;
+public sealed record GetDiplomasQuery(
+    int PageIndex = 1,
+    int PageSize = 10)
+    : IRequest<Result<PaginatedResult<DiplomaListItemResponse>>>;
+
+
+
+

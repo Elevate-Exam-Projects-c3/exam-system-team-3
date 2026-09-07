@@ -10,5 +10,6 @@ public enum ErrorKind
     Unauthorized,
     Forbidden,
     Gone,
-    TooManyRequests
+    TooManyRequests,
+    AlreadyExists,
 }

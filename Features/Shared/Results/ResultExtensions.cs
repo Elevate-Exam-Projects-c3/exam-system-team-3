@@ -1,6 +1,4 @@
-﻿using exam_system.Features.Shared.Results;
-
-namespace exam_system.Features.Shared;
+﻿namespace exam_system.Features.Shared.Results;
 
 public static class ResultExtensions
 {
@@ -11,9 +9,9 @@ public static class ResultExtensions
             return RequestResponse<T>.Ok(result.Value);
         }
 
-        var error = result.TopError;
+        var topError = result.TopError;
 
-        var statusCode = error.Type switch
+        var statusCode = topError.Type switch
         {
             ErrorKind.Validation => StatusCodes.Status400BadRequest,
             ErrorKind.Unauthorized => StatusCodes.Status401Unauthorized,
@@ -26,8 +24,14 @@ public static class ResultExtensions
             _ => StatusCodes.Status400BadRequest
         };
 
-        return RequestResponse<T>.Fail(
-            error.Description,
-            statusCode);
+        var errors = result.Errors
+                           .GroupBy(error => error.Code)
+                           .ToDictionary(
+                            group => group.Key,
+                            group => group
+                           .Select(error => error.Description)
+                           .ToArray());
+
+        return RequestResponse<T>.Fail(topError.Description, statusCode, errors);
     }
 }

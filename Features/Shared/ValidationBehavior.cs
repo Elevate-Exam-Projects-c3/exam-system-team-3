@@ -1,7 +1,4 @@
-﻿using FluentValidation;
-using MediatR;
-
-namespace exam_system.Infrastructure;
+﻿namespace exam_system.Features.Shared.Behaviors;
 
 public sealed class ValidationBehavior<TRequest, TResponse>(
     IEnumerable<IValidator<TRequest>> validators)
@@ -21,16 +18,12 @@ public sealed class ValidationBehavior<TRequest, TResponse>(
         var context = new ValidationContext<TRequest>(request);
 
         var failures = new List<FluentValidation.Results.ValidationFailure>();
+
         foreach (var validator in validators)
         {
-            var result = await validator.ValidateAsync(
-                context,
-                cancellationToken);
+            var result = await validator.ValidateAsync(context, cancellationToken);
 
-            if (!result.IsValid)
-            {
-                failures.AddRange(result.Errors);
-            }
+            failures.AddRange(result.Errors.Where(error => error is not null));
         }
 
         if (failures.Count > 0)

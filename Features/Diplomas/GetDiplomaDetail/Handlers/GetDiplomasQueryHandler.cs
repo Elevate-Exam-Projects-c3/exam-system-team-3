@@ -1,52 +1,51 @@
-﻿using exam_system.Common.Enums;
-using exam_system.Features.Diplomas.GetDiplomaDetail.DTOs;
-using exam_system.Features.Shared;
-using exam_system.Features.Shared.Results;
-using exam_system.Persistence.Context;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
+﻿
+using exam_system.Domain.Entities.Diplomas;
+using exam_system.Features.Diplomas.GetDiplomas.DTOs;
+using exam_system.Features.Diplomas.GetDiplomas.Queries;
 
-namespace exam_system.Features.Diplomas.GetDiplomaDetail.Handlers;
 
-public sealed class GetDiplomasQueryHandler(AppDbContext dbContext)
-    : IRequestHandler<GetDiplomasQuery,Result<PaginatedResult<DiplomaListItemResponse>>>
+namespace exam_system.Features.Diplomas.GetDiplomas.Handlers;
+
+public sealed class GetDiplomasQueryHandler(GenericRepository<Diploma> genericRepository,
+    ICurrentUser currentUser) : IRequestHandler<GetDiplomasQuery, Result<PaginatedResult<DiplomaListItemResponse>>>
 {
-    public async Task<Result<PaginatedResult<DiplomaListItemResponse>>> Handle(GetDiplomasQuery request,CancellationToken cancellationToken)
+    private readonly GenericRepository<Diploma> _genericRepository = genericRepository;
+
+    public async Task<Result<PaginatedResult<DiplomaListItemResponse>>> Handle(
+        GetDiplomasQuery request,
+        CancellationToken cancellationToken)
     {
-        //As a Student, I want to browse all published diploma programs, so that I can decide which one to pursue.
-        var query = dbContext.Diplomas
-          .AsNoTracking()
-          .Where(diploma => !diploma.IsDeleted)
-          .Where(diploma =>diploma.Quizzes.Any(quiz =>!quiz.IsDeleted && quiz.Status == QuizStatus.Published));
+        if (currentUser.UserId is not { } studentId)
+        {
+            return Error.Unauthorized(
+                "Student.Unauthorized",
+                "Authenticated student identity could not be resolved.");
+        }
+
+        var query = _genericRepository.GetAll()
+            .AsNoTracking()
+            .Where(diploma => !diploma.IsDeleted)
+            .Where(diploma => diploma.Quizzes.Any(quiz => !quiz.IsDeleted && quiz.Status == QuizStatus.Published));
 
         var totalCount = await query.CountAsync(cancellationToken);
-        
+
         var items = await query
-                    .OrderBy(diploma => diploma.Title)
-                    .Skip((request.PageIndex - 1) * request.PageSize)
-                    .Take(request.PageSize)
+            .OrderBy(diploma => diploma.Title)
+            .Skip((request.PageIndex - 1) * request.PageSize)
+            .Take(request.PageSize)
+            .Select(diploma => new DiplomaListItemResponse(
+                diploma.Id,
+                diploma.Title,
+                diploma.Description,
+                diploma.Quizzes.Count(quiz => !quiz.IsDeleted && quiz.Status == QuizStatus.Published &&
+                quiz.Attempts.Any(attempt => attempt.StudentId == studentId &&
+                        (
+                            attempt.Status == AttemptStatus.Submitted ||
+                            attempt.Status == AttemptStatus.TimedOut
+                        ))),
+                diploma.Quizzes.Count(quiz => !quiz.IsDeleted && quiz.Status == QuizStatus.Published)))
+                .ToListAsync(cancellationToken);
 
-               .Select(diploma => new DiplomaListItemResponse
-               {
-                   Id = diploma.Id,
-                   Title = diploma.Title,
-                   Description = diploma.Description,
-
-                   CompletedQuizzes = diploma.Quizzes.Count(quiz =>
-                       quiz.Status == QuizStatus.Published &&
-                       quiz.Attempts.Any(attempt =>
-                           attempt.StudentId == request.StudentId &&
-                           (
-                               attempt.Status == AttemptStatus.Submitted ||
-                               attempt.Status == AttemptStatus.TimedOut
-                           ))),
-
-                   TotalQuizzes = diploma.Quizzes.Count(quiz =>
-                                  !quiz.IsDeleted &&
-                                  quiz.Status == QuizStatus.Published)
-               })
-            .ToListAsync(cancellationToken);
-
-        return new PaginatedResult<DiplomaListItemResponse>(items,totalCount,request.PageIndex,request.PageSize);
+        return new PaginatedResult<DiplomaListItemResponse>(items, totalCount, request.PageIndex, request.PageSize);
     }
 }

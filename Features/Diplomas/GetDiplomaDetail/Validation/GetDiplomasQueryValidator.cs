@@ -1,4 +1,4 @@
-﻿using exam_system.Features.Diplomas.GetDiplomaDetail;
+﻿using exam_system.Features.Diplomas.GetDiplomas.Queries;
 
 namespace exam_system.Features.Diplomas.GetDiplomas.Validation;
 
