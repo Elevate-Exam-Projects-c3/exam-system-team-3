@@ -2,14 +2,16 @@
 using exam_system.Domain.Entities.Identity;
 using exam_system.Features.Identity.Register.Commands;
 using exam_system.Features.Shared;
+using exam_system.Features.Shared.Email;
 using exam_system.Persistence.DataAccess;
-
+using exam_system.Features.Shared.Results.ErrorCodes;
 namespace exam_system.Features.Identity.Register.Handlers;
 
 public class RegisterUserCommandHandler(
     IGenericRepository<ApplicationUser> userRepo,
     IGenericRepository<EmailVerificationOtp> otpRepo,
-    IUnitOfWork unitOfWork)
+    IUnitOfWork unitOfWork,
+    IEmailService emailService)
     : IRequestHandler<RegisterUserCommand, RequestResponse<RegisterUserResponse>>
 {
     public async Task<RequestResponse<RegisterUserResponse>> Handle(
@@ -23,7 +25,7 @@ public class RegisterUserCommandHandler(
         if (emailExists)
         {
             return RequestResponse<RegisterUserResponse>.Fail(
-                "Email already registered.",
+                RegisterUserErrors.EmailAlreadyRegistered,
                 StatusCodes.Status409Conflict);
         }
 
@@ -60,9 +62,8 @@ public class RegisterUserCommandHandler(
 
     
         await unitOfWork.SaveChangesAsync(cancellationToken);
-
-        // 6. TODO: إرسال الـ plainOtp بالإيميل — تأكد مين شايل Email Service في التيم
-
+        
+        await emailService.SendOtpEmailAsync(user.Email, plainOtp, cancellationToken); 
         return RequestResponse<RegisterUserResponse>.Created(
             new RegisterUserResponse(user.Id, user.Email, "Registration successful. Please verify your email."));
     }
