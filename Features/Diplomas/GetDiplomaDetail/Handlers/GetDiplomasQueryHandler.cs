@@ -6,10 +6,9 @@ using exam_system.Features.Diplomas.GetDiplomas.Queries;
 
 namespace exam_system.Features.Diplomas.GetDiplomas.Handlers;
 
-public sealed class GetDiplomasQueryHandler(GenericRepository<Diploma> genericRepository,
+public sealed class GetDiplomasQueryHandler(IGenericRepository<Diploma> genericRepository,
     ICurrentUser currentUser) : IRequestHandler<GetDiplomasQuery, Result<PaginatedResult<DiplomaListItemResponse>>>
 {
-    private readonly GenericRepository<Diploma> _genericRepository = genericRepository;
 
     public async Task<Result<PaginatedResult<DiplomaListItemResponse>>> Handle(
         GetDiplomasQuery request,
@@ -22,7 +21,7 @@ public sealed class GetDiplomasQueryHandler(GenericRepository<Diploma> genericRe
                 "Authenticated student identity could not be resolved.");
         }
 
-        var query = _genericRepository.GetAll()
+        var query = genericRepository.GetAll()
             .AsNoTracking()
             .Where(diploma => !diploma.IsDeleted)
             .Where(diploma => diploma.Quizzes.Any(quiz => !quiz.IsDeleted && quiz.Status == QuizStatus.Published));

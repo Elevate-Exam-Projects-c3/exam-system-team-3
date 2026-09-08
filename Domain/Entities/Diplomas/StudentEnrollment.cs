@@ -11,5 +11,5 @@ public class StudentEnrollment : BaseEntity
     public Guid DiplomaId { get; set; }
     public Diploma Diploma { get; set; } = null!;
 
-    public DateTime EnrolledAt { get; set; } = DateTime.UtcNow;
+    public DateTime EnrolledAt { get; set; }
 }
