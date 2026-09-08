@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>exam_system</RootNamespace>
+    <UserSecretsId>b0c2a389-d68e-46a7-836d-abd1462e5362</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -30,6 +31,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="MimeKit" Version="4.17.0" />
+    <PackageReference Include="SendGrid" Version="9.29.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.3" />
   </ItemGroup>
 
