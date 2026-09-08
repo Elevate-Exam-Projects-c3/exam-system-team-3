@@ -1,6 +1,8 @@
+using exam_system.Features.Shared.Results.Abstractions;
+
 namespace exam_system.Features.Shared;
 
-public class RequestResponse<T>
+public class RequestResponse<T>:IErrorResponse<RequestResponse<T>>
 {
     public bool Success { get; init; }
     public int StatusCode { get; init; }
