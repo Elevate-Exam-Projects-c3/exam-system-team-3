@@ -1,9 +1,8 @@
-﻿using exam_system.Features.Identity.VerifyEmailOtp.Commands;
-using exam_system.Features.Identity.VerifyEmailOtp.DTOs.Request;
+﻿using exam_system.Features.Identity.VerifyEmailOtp.Orchestrators;
 
 namespace exam_system.Features.Identity.VerifyEmailOtp.Validators;
 
-public class VerifyEmailOtpRequestValidator : AbstractValidator<VerifyEmailOtpRequest>
+public class VerifyEmailOtpRequestValidator : AbstractValidator<VerifyEmailOtpOrchestratorRequest>
 {
     public VerifyEmailOtpRequestValidator()
     {
