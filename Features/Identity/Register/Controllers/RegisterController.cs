@@ -9,14 +9,14 @@ namespace exam_system.Features.Identity.Register.Controllers;
 
 [ApiController]
 [Route("api/identity")]
-public class RegisterController(RegisterUserOrchestrator orchestrator ) : ControllerBase
+public class RegisterController(IMediator mediator ) : ControllerBase
 {
     [HttpPost("register")]
     public async Task<ActionResult<ApiResponse<RegisterUserResponse>>> Register(
-        [FromBody] RegisterUserRequest request,
+        [FromBody] RegisterOrchestratorRequest request,
         CancellationToken cancellationToken)
     {
-        var result = await orchestrator.RegisterAsync(request, cancellationToken);
+        var result = await mediator.Send(request, cancellationToken);
         var response = result.ToApiResponse();  
         
         return StatusCode(response.StatusCode, response);
