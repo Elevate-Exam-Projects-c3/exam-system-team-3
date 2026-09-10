@@ -1,11 +1,11 @@
 ﻿
-using exam_system.Features.Identity.Register.Commands;
+using exam_system.Features.Identity.Register.Orchestrators;
 
 namespace exam_system.Features.Identity.Register.Validators;
 
-public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
+public class RegisterOrchestratorRequestValidator : AbstractValidator<RegisterOrchestratorRequest>
 {
-    public CreateUserCommandValidator()
+    public RegisterOrchestratorRequestValidator()
     {
         RuleFor(x => x.FullName)
             .NotEmpty().WithMessage("Full name is required.")
