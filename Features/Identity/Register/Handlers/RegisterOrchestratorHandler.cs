@@ -4,7 +4,6 @@ using exam_system.Features.Identity.Register.DTOs.Response;
 using exam_system.Features.Identity.Register.Orchestrators;
 using exam_system.Features.Identity.Register.Queries;
 using exam_system.Features.Shared;
-using exam_system.Features.Shared.Results.ErrorCodes;
 using exam_system.Persistence.DataAccess;
 
 namespace exam_system.Features.Identity.Register.Handlers;
