@@ -1,7 +1,7 @@
-﻿namespace exam_system.Features.Shared.Results.ErrorCodes;
+﻿using exam_system.Features.Shared.Results;
 
 public static class RegisterUserErrors
 {
     public static readonly Error EmailAlreadyRegistered =
-        Error.Conflict("Register_Email_AlreadyRegistered", "Email is already registered.");
+        Error.Conflict("REGISTER_EMAIL_ALREADY_REGISTERED", "Email already registered.");
 }
