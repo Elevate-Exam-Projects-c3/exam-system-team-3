@@ -1,7 +1,8 @@
-using exam_system.Infrastructure;
+using exam_system.Features.Shared.Results;
 using exam_system.Persistence.Context;
 using exam_system.Persistence.DataAccess;
 using System.Reflection;
+
 
 namespace exam_system.Persistence;
 
@@ -25,8 +26,11 @@ public static class DependencyInjection
         services.AddMediatR(cfg =>
         {
             cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+            cfg.AddOpenBehavior(typeof(ValidationBehavior<,>)); 
         });
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+        
+       
 
         return services;
     }
