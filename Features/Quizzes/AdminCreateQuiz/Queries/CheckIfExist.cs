@@ -16,8 +16,7 @@ namespace exam_system.Features.Quizzes.AdminCreateQuiz.Queries
 
         public async Task<bool> Handle(CheckIfExist request,CancellationToken cancellationToken)
         {
-            return await _quizRepo.ExistsAsync(q => q.DiplomaId == request.DiplomaId && q.Title == request.QuizTitle,
-                cancellationToken);
+            return await _quizRepo.ExistsAsync(q => q.DiplomaId == request.DiplomaId && q.Title == request.QuizTitle,cancellationToken);
         }
     }
 }
