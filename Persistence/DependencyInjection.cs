@@ -2,9 +2,6 @@ using exam_system.Features.Shared.Results;
 using exam_system.Persistence.Context;
 using exam_system.Persistence.DataAccess;
 using System.Reflection;
-using exam_system.Features.Identity.Register.Orchestrators;
-using exam_system.Features.Identity.VerifyEmailOtp.Orchestrators;
-using exam_system.Features.Identity.VerifyEmailOtp.Validators;
 
 
 namespace exam_system.Persistence;
@@ -34,9 +31,6 @@ public static class DependencyInjection
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
         
        
-        services.AddScoped<RegisterUserOrchestrator>();
-        services.AddScoped<VerifyEmailOtpRequestValidator>();
-        services.AddScoped<VerifyEmailOtpOrchestrator>();
 
         return services;
     }
