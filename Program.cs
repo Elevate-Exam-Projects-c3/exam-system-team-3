@@ -13,7 +13,7 @@ builder.Services.AddPersistenceServices(builder.Configuration);
 builder.Services.AddCommonServices(builder.Configuration);
 var app = builder.Build();
 app.UseExceptionHandler();
-// Seed Database automatically on startup
+// Seed Database automatically on startup\\
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
