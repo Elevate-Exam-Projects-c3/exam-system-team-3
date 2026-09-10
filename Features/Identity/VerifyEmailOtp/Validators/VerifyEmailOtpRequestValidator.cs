@@ -1,10 +1,11 @@
 ﻿using exam_system.Features.Identity.VerifyEmailOtp.Commands;
+using exam_system.Features.Identity.VerifyEmailOtp.DTOs.Request;
 
 namespace exam_system.Features.Identity.VerifyEmailOtp.Validators;
 
-public class VerifyEmailOtpCommandValidator : AbstractValidator<VerifyEmailOtpCommand>
+public class VerifyEmailOtpRequestValidator : AbstractValidator<VerifyEmailOtpRequest>
 {
-    public VerifyEmailOtpCommandValidator()
+    public VerifyEmailOtpRequestValidator()
     {
         RuleFor(x => x.Email)
             .NotEmpty().WithMessage("Email is required.")
