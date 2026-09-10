@@ -12,7 +12,7 @@ app.UseExceptionHandler();
 // Seed Database automatically on startup
 using (var scope = app.Services.CreateScope())
 {
-    var services = scope.ServiceProvider;
+    var services = scope.ServiceProvider;                   
     var logger = services.GetRequiredService<ILogger<Program>>();
     try
     {
