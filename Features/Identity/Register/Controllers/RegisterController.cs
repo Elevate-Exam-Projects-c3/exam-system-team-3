@@ -1,19 +1,22 @@
-﻿using exam_system.Features.Identity.Register.Commands;
+﻿
+using exam_system.Features.Identity.Register.DTOs.Request;
+using exam_system.Features.Identity.Register.DTOs.Response;
+using exam_system.Features.Identity.Register.Orchestrators;
 using exam_system.Features.Shared;
 using Microsoft.AspNetCore.Mvc;
 
 namespace exam_system.Features.Identity.Register.Controllers;
 
 [ApiController]
-[Route("api/identity/[controller]")]
-public class RegisterController(IMediator mediator) : ControllerBase
+[Route("api/identity")]
+public class RegisterController(RegisterUserOrchestrator orchestrator ) : ControllerBase
 {
-    [HttpPost]
-    public async Task<IActionResult> Register(
-        [FromBody] RegisterUserCommand command,
+    [HttpPost("register")]
+    public async Task<ActionResult<ApiResponse<RegisterUserResponse>>> Register(
+        [FromBody] RegisterUserRequest request,
         CancellationToken cancellationToken)
     {
-        var result = await mediator.Send(command, cancellationToken);
+        var result = await orchestrator.RegisterAsync(request, cancellationToken);
         var response = result.ToApiResponse();  
         
         return StatusCode(response.StatusCode, response);

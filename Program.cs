@@ -1,3 +1,4 @@
+using exam_system.Common;
 using exam_system.Domain.Entities.Diplomas;
 using exam_system.Persistence;
 using exam_system.Persistence.Context;
@@ -9,6 +10,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddPersistenceServices(builder.Configuration);
+builder.Services.AddCommonServices(builder.Configuration);
 var app = builder.Build();
 app.UseExceptionHandler();
 // Seed Database automatically on startup

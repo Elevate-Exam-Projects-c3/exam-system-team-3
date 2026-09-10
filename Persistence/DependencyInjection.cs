@@ -1,8 +1,8 @@
-using exam_system.Infrastructure;
+using exam_system.Features.Shared.Results;
 using exam_system.Persistence.Context;
 using exam_system.Persistence.DataAccess;
 using System.Reflection;
-using exam_system.Features.Shared.Email;
+using exam_system.Features.Identity.Register.Orchestrators;
 using exam_system.Features.Shared.Results;
 
 namespace exam_system.Persistence;
@@ -30,7 +30,9 @@ public static class DependencyInjection
             cfg.AddOpenBehavior(typeof(ValidationBehavior<,>)); 
         });
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-        services.AddScoped<IEmailService, EmailService>();
+        
+       
+        services.AddScoped<RegisterUserOrchestrator>();
 
         return services;
     }

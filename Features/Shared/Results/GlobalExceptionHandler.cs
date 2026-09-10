@@ -1,7 +1,7 @@
 ﻿using exam_system.Features.Shared;
 using Microsoft.AspNetCore.Diagnostics;
 
-namespace exam_system.Infrastructure;
+namespace exam_system.Features.Shared.Results;
 
 public sealed class GlobalExceptionHandler(
     ILogger<GlobalExceptionHandler> logger)

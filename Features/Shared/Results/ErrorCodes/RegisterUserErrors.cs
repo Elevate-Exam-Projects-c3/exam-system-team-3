@@ -2,5 +2,6 @@
 
 public static class RegisterUserErrors
 {
-    public const string EmailAlreadyRegistered = "REGISTER_EMAIL_ALREADY_REGISTERED";
+    public static readonly Error EmailAlreadyRegistered =
+        Error.Conflict("Register_Email_AlreadyRegistered", "Email is already registered.");
 }
