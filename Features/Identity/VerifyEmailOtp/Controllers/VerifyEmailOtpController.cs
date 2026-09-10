@@ -1,25 +1,22 @@
-﻿using exam_system.Features.Identity.VerifyEmailOtp.Commands;
+﻿using exam_system.Features.Identity.VerifyEmailOtp.DTOs.Request;
+using exam_system.Features.Identity.VerifyEmailOtp.DTOs.Response;
+using exam_system.Features.Identity.VerifyEmailOtp.Orchestrators;
 using exam_system.Features.Shared;
 using Microsoft.AspNetCore.Mvc;
 
 namespace exam_system.Features.Identity.VerifyEmailOtp.Controllers;
 
 [ApiController]
-[Route("api/identity/[controller]")]
-
-public class VerifyEmailOtpController(IMediator mediator):ControllerBase
+[Route("api/identity")]
+public class VerifyEmailOtpController(VerifyEmailOtpOrchestrator orchestrator) : ControllerBase
 {
-    
-    [HttpPost]
-    
-    public async Task<IActionResult> Verify(
-        [FromBody] VerifyEmailOtpCommand command,
-    CancellationToken  cancellationToken)
+    [HttpPost("verify-otp")]
+    public async Task<ActionResult<ApiResponse<VerifyEmailOtpResponse>>> Verify(
+        [FromBody] VerifyEmailOtpRequest request,
+        CancellationToken cancellationToken)
     {
-        
-        var result = await mediator.Send(command, cancellationToken);
+        var result = await orchestrator.VerifyAsync(request, cancellationToken);
         var response = result.ToApiResponse();
         return StatusCode(response.StatusCode, response);
-
     }
 }
