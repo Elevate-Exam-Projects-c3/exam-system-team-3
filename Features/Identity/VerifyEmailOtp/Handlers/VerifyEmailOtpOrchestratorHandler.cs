@@ -1,37 +1,25 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 using exam_system.Features.Identity.VerifyEmailOtp.Commands;
-using exam_system.Features.Identity.VerifyEmailOtp.DTOs.Request;
 using exam_system.Features.Identity.VerifyEmailOtp.DTOs.Response;
+using exam_system.Features.Identity.VerifyEmailOtp.Orchestrators;
 using exam_system.Features.Identity.VerifyEmailOtp.Queries;
-using exam_system.Features.Identity.VerifyEmailOtp.Validators;
 using exam_system.Features.Shared;
 using exam_system.Features.Shared.Results.ErrorCodes;
 using exam_system.Persistence.DataAccess;
 
-namespace exam_system.Features.Identity.VerifyEmailOtp.Orchestrators;
+namespace exam_system.Features.Identity.VerifyEmailOtp.Handlers;
 
-public class VerifyEmailOtpOrchestrator(
+public class VerifyEmailOtpOrchestratorHandler(
     IMediator mediator,
     IUnitOfWork unitOfWork,
-    VerifyEmailOtpRequestValidator validator,
-    ILogger<VerifyEmailOtpOrchestrator> logger)
+    ILogger<VerifyEmailOtpOrchestratorHandler> logger)
+    : IRequestHandler<VerifyEmailOtpOrchestratorRequest, RequestResponse<VerifyEmailOtpResponse>>
 {
-    public async Task<RequestResponse<VerifyEmailOtpResponse>> VerifyAsync(
-        VerifyEmailOtpRequest request,
+    public async Task<RequestResponse<VerifyEmailOtpResponse>> Handle(
+        VerifyEmailOtpOrchestratorRequest request,
         CancellationToken cancellationToken)
     {
-        var validationResult = await validator.ValidateAsync(request, cancellationToken);
-        if (!validationResult.IsValid)
-        {
-            var errors = validationResult.Errors
-                .GroupBy(f => f.PropertyName)
-                .ToDictionary(g => g.Key, g => g.Select(f => f.ErrorMessage).ToArray());
-
-            return RequestResponse<VerifyEmailOtpResponse>.Fail(
-                "Validation failed.", StatusCodes.Status400BadRequest, errors);
-        }
-
         var normalizedEmail = request.Email.Trim().ToLower();
 
         var user = await mediator.Send(
