@@ -10,6 +10,7 @@ public class CheckEmailExistsQueryHandler(
 {
     public async Task<bool> Handle(
         CheckEmailExistsQuery request, 
+        
         CancellationToken cancellationToken)
     {
         var normalizedEmail = request.Email.ToLower();
