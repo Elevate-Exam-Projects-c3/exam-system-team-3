@@ -3,7 +3,7 @@ using exam_system.Features.Shared;
 
 namespace exam_system.Features.Identity.Register.Orchestrators;
 
-public record RegisterOrchestratorRequest(
+public record RegisterOrchestrator(
     string FullName,
     string Email,
     string Password

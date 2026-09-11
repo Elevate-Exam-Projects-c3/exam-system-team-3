@@ -2,9 +2,9 @@
 
 namespace exam_system.Features.Identity.VerifyEmailOtp.Validators;
 
-public class VerifyEmailOtpRequestValidator : AbstractValidator<VerifyEmailOtpOrchestratorRequest>
+public class VerifyEmailOtpValidator : AbstractValidator<VerifyEmailOtpOrchestrator>
 {
-    public VerifyEmailOtpRequestValidator()
+    public VerifyEmailOtpValidator()
     {
         RuleFor(x => x.Email)
             .NotEmpty().WithMessage("Email is required.")

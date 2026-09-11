@@ -16,10 +16,10 @@ public class RegisterOrchestratorHandler(
     IUnitOfWork unitOfWork,
     IEmailService emailService,
     ILogger<RegisterOrchestratorHandler> logger)
-    : IRequestHandler<RegisterOrchestratorRequest, RequestResponse<RegisterUserResponse>>
+    : IRequestHandler<RegisterOrchestrator, RequestResponse<RegisterUserResponse>>
 {
     public async Task<RequestResponse<RegisterUserResponse>> Handle(
-        RegisterOrchestratorRequest request,
+        RegisterOrchestrator request,
         CancellationToken cancellationToken)
     {
         var normalizedEmail = request.Email.Trim().ToLower();

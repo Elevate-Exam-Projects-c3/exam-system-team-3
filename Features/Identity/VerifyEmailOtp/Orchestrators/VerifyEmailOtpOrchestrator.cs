@@ -3,7 +3,7 @@ using exam_system.Features.Shared;
 
 namespace exam_system.Features.Identity.VerifyEmailOtp.Orchestrators;
 
-public record VerifyEmailOtpOrchestratorRequest(
+public record VerifyEmailOtpOrchestrator(
     string Email,
     string Otp
 ) : IRequest<RequestResponse<VerifyEmailOtpResponse>>;

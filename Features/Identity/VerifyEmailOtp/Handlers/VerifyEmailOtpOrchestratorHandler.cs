@@ -14,10 +14,10 @@ public class VerifyEmailOtpOrchestratorHandler(
     IMediator mediator,
     IUnitOfWork unitOfWork,
     ILogger<VerifyEmailOtpOrchestratorHandler> logger)
-    : IRequestHandler<VerifyEmailOtpOrchestratorRequest, RequestResponse<VerifyEmailOtpResponse>>
+    : IRequestHandler<VerifyEmailOtpOrchestrator, RequestResponse<VerifyEmailOtpResponse>>
 {
     public async Task<RequestResponse<VerifyEmailOtpResponse>> Handle(
-        VerifyEmailOtpOrchestratorRequest request,
+        VerifyEmailOtpOrchestrator request,
         CancellationToken cancellationToken)
     {
         var normalizedEmail = request.Email.Trim().ToLower();
