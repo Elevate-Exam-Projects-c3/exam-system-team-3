@@ -4,13 +4,12 @@ using exam_system.Features.Diplomas.AdminDeleteDiploma.Quiers;
 namespace exam_system.Features.Diplomas.AdminDeleteDiploma.Handlers;
 
 public class HasActiveEnrollmentsHandler(IGenericRepository<StudentEnrollment> enrollmentRepository)
-                                        : IRequestHandler<HasActiveEnrollmentsQuiery, bool>
+                                        : IRequestHandler<HasActiveEnrollmentQuery, bool>
 {
-    public async Task<bool> Handle(HasActiveEnrollmentsQuiery request, CancellationToken cancellationToken)
+    public async Task<bool> Handle(HasActiveEnrollmentQuery request, CancellationToken cancellationToken)
     {
-        var hasActiveEnrollments = await enrollmentRepository
+        return await enrollmentRepository
             .Get(x => x.DiplomaId == request.DiplomaId && !x.IsDeleted)
             .AnyAsync(cancellationToken);
-        return hasActiveEnrollments;
     }
 }
