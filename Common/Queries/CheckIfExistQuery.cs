@@ -1,8 +1,7 @@
 ﻿using exam_system.Domain.Entities.Quizzes;
-using exam_system.Features.Quizzes.AdminCreateQuiz.Queries;
 using exam_system.Persistence.DataAccess;
 
-namespace exam_system.Features.Quizzes.AdminUpdateQuiz.Queries
+namespace exam_system.Common.Queries
 {
     public record CheckIfExistQuery(string QuizTitle,Guid? ExcludeQuizId = null) : IRequest<bool>;
     public class CheckIfExistHandler(IGenericRepository<Quiz> _quizRepo) : IRequestHandler<CheckIfExistQuery, bool>

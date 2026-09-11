@@ -1,5 +1,6 @@
 ﻿using exam_system.Features.Quizzes.AdminUpdateQuiz.DTO;
 using exam_system.Features.Quizzes.AdminUpdateQuiz.Orchestrators;
+using exam_system.Features.Quizzes.AdminUpdateQuiz.Orchestrators.exam_system.Features.Quizzes.AdminUpdateQuiz.Orchestrators;
 using exam_system.Features.Shared;
 using exam_system.Features.Shared.Results;
 using Microsoft.AspNetCore.Mvc;
@@ -8,12 +9,12 @@ namespace exam_system.Features.Quizzes.AdminUpdateQuiz.Controllers
 {
     [ApiController]
     [Route("api/admin/quizzes")]
-    public class UpdateQuizController(UpdateQuizOrchestrator _updateQuizOrchestrator) : ControllerBase
+    public class UpdateQuizController(IMediator _mediator) : ControllerBase
     {
         [HttpPut("{quizId:guid}")]
         public async Task<IActionResult> UpdateQuiz(Guid quizId,[FromBody] UpdateQuizRequest request,CancellationToken cancellationToken)
         {
-            var result = await _updateQuizOrchestrator.ExecuteAsync(quizId,request,cancellationToken);
+            var result = await _mediator.Send(new UpdateQuizOrchestrator(quizId,request),cancellationToken);
 
             if (!result.IsSuccess)
             {

@@ -9,12 +9,16 @@ namespace exam_system.Features.Quizzes.AdminCreateQuiz.Controllers
 {
     [ApiController]
     [Route("api/admin/quizzes")]
-    public class CreateQuizController(CreateQuizOrchestrator _createQuizOrchestrator) : ControllerBase
+    public class CreateQuizController(IMediator _mediator) : ControllerBase
     {
         [HttpPost]
-        public async Task<IActionResult> CreateQuiz([FromBody] CreateQuizRequest request,CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateQuiz(
+            [FromBody] CreateQuizRequest request,
+            CancellationToken cancellationToken)
         {
-            var result = await _createQuizOrchestrator.ExecuteAsync(request,cancellationToken);
+            var result = await _mediator.Send(
+                new CreateQuizOrchestrator(request),
+                cancellationToken);
 
             if (!result.IsSuccess)
             {
@@ -23,13 +27,19 @@ namespace exam_system.Features.Quizzes.AdminCreateQuiz.Controllers
                 return error.Type switch
                 {
                     ErrorKind.Conflict => Conflict(error),
-                    ErrorKind.NotFound => NotFound(error),
                     ErrorKind.Validation => BadRequest(error),
-                    _ => StatusCode(500, error)
+                    ErrorKind.NotFound => NotFound(error),
+                    ErrorKind.Unauthorized => Unauthorized(error),
+                    ErrorKind.Forbidden =>
+                        StatusCode(StatusCodes.Status403Forbidden, error),
+                    _ =>
+                        StatusCode(
+                            StatusCodes.Status500InternalServerError,
+                            error)
                 };
             }
 
-            return Ok(result.Value);
+            return StatusCode(StatusCodes.Status201Created,result.Value);
         }
     }
 }
