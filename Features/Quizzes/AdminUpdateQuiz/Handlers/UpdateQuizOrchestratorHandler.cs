@@ -36,11 +36,7 @@ namespace exam_system.Features.Quizzes.AdminUpdateQuiz.Handlers
                         "Quiz not found."));
             }
 
-            return await _mediator.Send(
-                new UpdateQuizCommand(
-                    quiz,
-                    request.Request),
-                cancellationToken);
+            return await _mediator.Send(new UpdateQuizCommand(quiz,request.Request),cancellationToken);
         }
     }
 }
