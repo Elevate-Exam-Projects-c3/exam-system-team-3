@@ -1,20 +1,17 @@
-﻿using exam_system.Features.Quizzes.AdminCreateQuiz.Commands;
-using exam_system.Features.Quizzes.AdminCreateQuiz.Orchestrators;
-using exam_system.Features.Quizzes.AdminCreateQuiz.ViewModel;
-using exam_system.Features.Shared;
+﻿using exam_system.Features.Quizzes.AdminDeleteQuiz.Orchestrators;
 using exam_system.Features.Shared.Results;
 using Microsoft.AspNetCore.Mvc;
 
-namespace exam_system.Features.Quizzes.AdminCreateQuiz.Controllers
+namespace exam_system.Features.Quizzes.AdminDeleteQuiz.Controllers
 {
     [ApiController]
     [Route("api/admin/quizzes")]
-    public class CreateQuizController(IMediator _mediator) : ControllerBase
+    public class AdminDeleteQuizzesController(IMediator _mediator) : ControllerBase
     {
-        [HttpPost]
-        public async Task<IActionResult> CreateQuiz([FromBody] CreateQuizRequest request,CancellationToken cancellationToken)
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> Delete(Guid id,CancellationToken cancellationToken)
         {
-            var result = await _mediator.Send(new CreateQuizOrchestrator(request),cancellationToken);
+            var result = await _mediator.Send(new DeleteQuizOrchestrator(id),cancellationToken);
 
             if (!result.IsSuccess)
             {
@@ -34,8 +31,8 @@ namespace exam_system.Features.Quizzes.AdminCreateQuiz.Controllers
                             error)
                 };
             }
-
-            return StatusCode(StatusCodes.Status201Created,result.Value);
+            return StatusCode(StatusCodes.Status201Created, result.Value);
         }
     }
+}
 }

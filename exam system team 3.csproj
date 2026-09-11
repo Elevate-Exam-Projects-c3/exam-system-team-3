@@ -36,7 +36,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Questions\" />
+    <Folder Include="Features\Questions\AdminCreateQuestion\Queries\" />
+    <Folder Include="Features\Questions\AdminDeleteQuestion\Validators\" />
   </ItemGroup>
 
 </Project>
