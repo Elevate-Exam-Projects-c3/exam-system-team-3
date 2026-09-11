@@ -125,6 +125,9 @@ public class StudentEnrollmentConfiguration : IEntityTypeConfiguration<StudentEn
             .WithMany(d => d.Enrollments)
             .HasForeignKey(e => e.DiplomaId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Property(enrollment => enrollment.EnrolledAt)
+            .IsRequired();
     }
 }
 

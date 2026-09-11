@@ -12,6 +12,30 @@ public sealed class GlobalExceptionHandler(
         Exception exception,
         CancellationToken cancellationToken)
     {
+        if (exception is ValidationException validationException)
+        {
+            var errors = validationException.Errors
+                .GroupBy(error => error.PropertyName)
+                .ToDictionary(
+                    group => group.Key,
+                    group => group
+                        .Select(error => error.ErrorMessage)
+                        .ToArray());
+
+            var validationResponse = ApiResponse<object>.Fail(
+                message: "Validation failed.",
+                statusCode: StatusCodes.Status400BadRequest,
+                errors: errors);
+
+            httpContext.Response.StatusCode = validationResponse.StatusCode;
+
+            await httpContext.Response.WriteAsJsonAsync(
+                validationResponse,
+                cancellationToken);
+
+            return true;
+        }
+
         logger.LogError(
             exception,
             "Unhandled exception occurred. TraceId: {TraceId}",

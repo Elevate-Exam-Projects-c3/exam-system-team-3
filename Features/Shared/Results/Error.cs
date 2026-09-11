@@ -62,6 +62,10 @@ public readonly record struct Error
         string code = nameof(TooManyRequests),
         string description = "Too many requests.")
         => new(code, description, ErrorKind.TooManyRequests);
+    public static Error AlreadyExists(
+        string code = nameof(AlreadyExists),
+        string description = "Resource already exists.")
+        => new(code, description, ErrorKind.AlreadyExists);
 
     public static Error Create(
         ErrorKind type,
