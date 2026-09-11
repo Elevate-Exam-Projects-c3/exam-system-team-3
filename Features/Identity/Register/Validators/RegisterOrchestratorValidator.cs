@@ -3,9 +3,9 @@ using exam_system.Features.Identity.Register.Orchestrators;
 
 namespace exam_system.Features.Identity.Register.Validators;
 
-public class RegisterOrchestratorRequestValidator : AbstractValidator<RegisterOrchestrator>
+public class RegisterOrchestratorValidator : AbstractValidator<RegisterOrchestrator>
 {
-    public RegisterOrchestratorRequestValidator()
+    public RegisterOrchestratorValidator()
     {
         RuleFor(x => x.FullName)
             .NotEmpty().WithMessage("Full name is required.")
