@@ -1,8 +1,15 @@
-using exam_system.Features.Diplomas.GetDiplomaDetail.Queries;
+using System.Reflection;
 using exam_system.Features.Shared.Behaviors;
 using exam_system.Infrastructure;
+using exam_system.Persistence.Context;
+using exam_system.Persistence.DataAccess;
+using FluentValidation;
+using Mapster;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace exam_system;
+namespace exam_system.Persistence;
 
 public static class DependencyInjection
 {
@@ -16,6 +23,7 @@ public static class DependencyInjection
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         return services;
     }
+
     public static IServiceCollection AddFeatureServices(this IServiceCollection services)
     {
         var assembly = typeof(DependencyInjection).Assembly;
@@ -31,6 +39,7 @@ public static class DependencyInjection
 
         return services;
     }
+
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
     {
         services.AddHttpContextAccessor();

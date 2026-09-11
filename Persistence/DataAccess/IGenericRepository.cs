@@ -2,6 +2,7 @@ namespace exam_system.Persistence.DataAccess;
 
 public interface IGenericRepository<T> where T : BaseEntity
 {
+    Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate,CancellationToken cancellationToken = default);
     Task<T?> GetByIdAsync(Guid id, params Expression<Func<T, object>>[] includes);
     IQueryable<T> GetAll();
     IQueryable<T> Get(Expression<Func<T, bool>> predicate);
@@ -14,4 +15,5 @@ public interface IGenericRepository<T> where T : BaseEntity
     void HardDelete(T entity);
     void DeleteRange(IEnumerable<T> entities);
     Task<int> CountAsync(Expression<Func<T, bool>>? criteria = null);
+    Task SaveChangesAsync(CancellationToken cancellationToken = default);
 }
