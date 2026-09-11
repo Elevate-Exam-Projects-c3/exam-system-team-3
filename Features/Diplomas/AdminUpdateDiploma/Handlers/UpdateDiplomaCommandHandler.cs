@@ -13,8 +13,7 @@ public sealed class UpdateDiplomaCommandHandler(IGenericRepository<Diploma> dipl
             .Get(x => x.Id == request.Id && !x.IsDeleted)
             .FirstOrDefaultAsync(cancellationToken);
 
-        if (diploma is null)
-            return DiplomaErrors.NotFound;
+        if (diploma is null) return DiplomaErrors.NotFound;
 
         diploma.Title = request.Title.Trim();
         diploma.Description = string.IsNullOrWhiteSpace(request.Description) ? null : request.Description.Trim();
