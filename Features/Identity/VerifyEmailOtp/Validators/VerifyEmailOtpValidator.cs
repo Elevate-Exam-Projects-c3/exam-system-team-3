@@ -2,7 +2,7 @@
 
 namespace exam_system.Features.Identity.VerifyEmailOtp.Validators;
 
-public class VerifyEmailOtpRequestValidator : AbstractValidator<VerifyEmailOtpOrchestratorRequest>
+public class VerifyEmailOtpRequestValidator : AbstractValidator<VerifyEmailOtpOrchestrator>
 {
     public VerifyEmailOtpRequestValidator()
     {

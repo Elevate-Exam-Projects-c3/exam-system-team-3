@@ -3,7 +3,7 @@ using exam_system.Features.Identity.Register.Orchestrators;
 
 namespace exam_system.Features.Identity.Register.Validators;
 
-public class RegisterOrchestratorRequestValidator : AbstractValidator<RegisterOrchestratorRequest>
+public class RegisterOrchestratorRequestValidator : AbstractValidator<RegisterOrchestrator>
 {
     public RegisterOrchestratorRequestValidator()
     {
