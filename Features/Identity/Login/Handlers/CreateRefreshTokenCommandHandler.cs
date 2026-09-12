@@ -1,7 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 using exam_system.Common.Auth.Jwt;
-using exam_system.Domain.Entities.Identity;
 using exam_system.Features.Identity.Login.Commands;
 using exam_system.Features.Shared;
 using exam_system.Persistence.DataAccess;
@@ -9,7 +8,7 @@ using exam_system.Persistence.DataAccess;
 namespace exam_system.Features.Identity.Login.Handlers;
 
 public class CreateRefreshTokenCommandHandler(
-    IGenericRepository<RefreshToken> refreshTokenRepo,
+    IGenericRepository<Domain.Entities.Identity.RefreshToken> refreshTokenRepo,
     IUnitOfWork unitOfWork,
     ITokenService tokenService)
     : IRequestHandler<CreateRefreshTokenCommand, RequestResponse<string>>
@@ -22,7 +21,7 @@ public class CreateRefreshTokenCommandHandler(
         var refreshTokenHash = Convert.ToHexString(
             SHA256.HashData(Encoding.UTF8.GetBytes(rawRefreshToken)));
 
-        var refreshTokenEntity = new RefreshToken
+        var refreshTokenEntity = new Domain.Entities.Identity.RefreshToken
         {
             Id = Guid.NewGuid(),
             UserId = request.UserId,
