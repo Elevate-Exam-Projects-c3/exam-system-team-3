@@ -1,6 +1,6 @@
 ﻿namespace exam_system.Features.Shared.Results.ErrorCodes;
 
-public class RefreshTokenErrors
+public class RefreshErrors
 {
     public static readonly Error TokenNotFound =
         Error.Unauthorized("REFRESH_TOKEN_NOT_FOUND", "Invalid refresh token.");
