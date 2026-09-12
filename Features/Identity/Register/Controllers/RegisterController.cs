@@ -3,6 +3,7 @@ using exam_system.Features.Identity.Register.DTOs.Request;
 using exam_system.Features.Identity.Register.DTOs.Response;
 using exam_system.Features.Identity.Register.Orchestrators;
 using exam_system.Features.Shared;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace exam_system.Features.Identity.Register.Controllers;
@@ -11,6 +12,7 @@ namespace exam_system.Features.Identity.Register.Controllers;
 [Route("api/identity")]
 public class RegisterController(IMediator mediator ) : ControllerBase
 {
+    [AllowAnonymous]
     [HttpPost("register")]
     public async Task<ActionResult<ApiResponse<RegisterUserResponse>>> Register(
         [FromBody] RegisterUserRequest request,

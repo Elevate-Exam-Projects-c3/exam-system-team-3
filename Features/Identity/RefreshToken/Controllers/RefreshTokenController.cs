@@ -2,6 +2,7 @@
 using exam_system.Features.Identity.RefreshToken.DTOs.Response;
 using exam_system.Features.Identity.RefreshToken.Orchestrators;
 using exam_system.Features.Shared;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace exam_system.Features.Identity.RefreshToken.Controllers;
@@ -12,6 +13,7 @@ public class RefreshTokenController(
     IRefreshTokenCarrier refreshTokenCarrier
     ) :ControllerBase
 {
+    [AllowAnonymous]
     [HttpPost("refresh")]
 
     public async Task<ActionResult<ApiResponse<RefreshTokenResponse>>> Refresh(CancellationToken cancellationToken)

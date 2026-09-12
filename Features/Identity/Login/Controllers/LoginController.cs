@@ -2,10 +2,10 @@
 using exam_system.Features.Identity.Login.DTOs.Request;
 using exam_system.Features.Identity.Login.Orchestrators;
 using exam_system.Features.Shared;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace exam_system.Features.Identity.Login.Controllers;
-
 [ApiController]
 [Route("api/identity")]
 public class LoginController(
@@ -13,6 +13,7 @@ public class LoginController(
     IRefreshTokenCarrier refreshTokenCarrier)
     : ControllerBase
 {
+[AllowAnonymous]
     [HttpPost("login")]
     public async Task<IActionResult> Login(
         [FromBody] LoginRequest request,
