@@ -1,3 +1,16 @@
-﻿global using FluentValidation;
+﻿global using exam_system;
+global using exam_system.Common.Enums;
+global using exam_system.Common.Interfaces;
+global using exam_system.Domain.Common;
+global using exam_system.Features.Shared;
+global using exam_system.Features.Shared.Results;
+global using exam_system.Persistence.Context;
+global using exam_system.Persistence.DataAccess;
+global using FluentValidation;
+global using Mapster;
 global using MediatR;
+global using Microsoft.AspNetCore.Authorization;
+global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.EntityFrameworkCore;
+global using System.Linq.Expressions;
+global using System.Security.Claims;

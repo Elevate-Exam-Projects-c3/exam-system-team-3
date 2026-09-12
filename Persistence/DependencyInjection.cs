@@ -1,8 +1,13 @@
-using exam_system.Features.Shared.Results;
+using System.Reflection;
+using exam_system.Features.Shared.Behaviors;
+using exam_system.Infrastructure;
 using exam_system.Persistence.Context;
 using exam_system.Persistence.DataAccess;
-using System.Reflection;
-
+using FluentValidation;
+using Mapster;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace exam_system.Persistence;
 
@@ -13,24 +18,35 @@ public static class DependencyInjection
         var connectionString = configuration.GetConnectionString("DefaultConnection")
             ?? "Server=(localdb)\\mssqllocaldb;Database=ExaminationSystemDb;Trusted_Connection=True;MultipleActiveResultSets=true";
 
-        services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlServer(connectionString));
-
+        services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        return services;
+    }
+
+    public static IServiceCollection AddFeatureServices(this IServiceCollection services)
+    {
+        var assembly = typeof(DependencyInjection).Assembly;
+
+        services.AddMediatR(config =>
+        {
+            config.RegisterServicesFromAssembly(assembly);
+            config.AddOpenBehavior(typeof(ValidationBehavior<,>));
+        });
+
+        services.AddValidatorsFromAssembly(assembly);
+        services.AddMapster();
+
+        return services;
+    }
+
+    public static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
+    {
+        services.AddHttpContextAccessor();
+        services.AddScoped<ICurrentUser, GetCurrentUser>();
 
         services.AddExceptionHandler<GlobalExceptionHandler>();
         services.AddProblemDetails();
-
-
-        services.AddMediatR(cfg =>
-        {
-            cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
-            cfg.AddOpenBehavior(typeof(ValidationBehavior<,>)); 
-        });
-        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-        
-       
 
         return services;
     }

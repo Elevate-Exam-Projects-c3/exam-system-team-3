@@ -18,6 +18,7 @@
     <PackageReference Include="MailKit" Version="4.17.0" />
     <PackageReference Include="Mapster" Version="10.0.12" />
     <PackageReference Include="Mapster.DependencyInjection" Version="10.0.12" />
+    <PackageReference Include="Mapster.EFCore" Version="10.0.12" />
     <PackageReference Include="MediatR" Version="14.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.12" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.11" />
@@ -34,6 +35,11 @@
     <PackageReference Include="MimeKit" Version="4.17.0" />
     <PackageReference Include="SendGrid" Version="9.29.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Features\Questions\AdminCreateQuestion\Queries\" />
+    <Folder Include="Features\Questions\AdminDeleteQuestion\Validators\" />
   </ItemGroup>
 
 </Project>

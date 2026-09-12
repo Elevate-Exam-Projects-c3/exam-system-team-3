@@ -1,9 +1,3 @@
-using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using exam_system.Domain.Common;
-using exam_system.Persistence.Context;
-
 namespace exam_system.Persistence.DataAccess;
 
 public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
@@ -15,6 +9,11 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
         _context = context;
         _dbSet = _context.Set<T>();
+    }
+
+    public async Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate,CancellationToken cancellationToken = default)
+    {
+        return await _dbSet.AnyAsync(predicate, cancellationToken);
     }
 
     public async Task<T?> GetByIdAsync(Guid id, params Expression<Func<T, object>>[] includes)
@@ -54,7 +53,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
         _dbSet.Update(entity);
     }
 
- 
+
     // Soft Delete - marks as deleted but keeps in database
     public void Delete(T entity)
     {
@@ -100,5 +99,10 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
         Delete(entity); // Use soft delete
         return Task.CompletedTask;
+    }
+
+    public async Task SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        await _context.SaveChangesAsync(cancellationToken);
     }
 }

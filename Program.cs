@@ -10,13 +10,16 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddPersistenceServices(builder.Configuration);
+builder.Services.AddFeatureServices();
+builder.Services.AddInfrastructureServices();
 builder.Services.AddCommonServices(builder.Configuration);
 var app = builder.Build();
+
 app.UseExceptionHandler();
 // Seed Database automatically on startup\\
 using (var scope = app.Services.CreateScope())
 {
-    var services = scope.ServiceProvider;
+    var services = scope.ServiceProvider;                   
     var logger = services.GetRequiredService<ILogger<Program>>();
     try
     {
@@ -41,33 +44,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthentication();
 app.UseAuthorization();
-
-// Test Minimal API Endpoint to verify database access and generic repository
-app.MapGet("/api/test/diplomas", async (IGenericRepository<Diploma> diplomaRepo, CancellationToken ct) =>
-{
-    var diplomas = await diplomaRepo.GetAll()
-        .Select(d => new
-        {
-            d.Id,
-            d.Title,
-            d.Description,
-            QuizzesCount = d.Quizzes.Count,
-            EnrollmentsCount = d.Enrollments.Count,
-            d.CreatedAt
-        })
-        .ToListAsync(ct);
-
-    return Results.Ok(new
-    {
-        Success = true,
-        Count = diplomas.Count,
-        Data = diplomas
-    });
-})
-.WithName("GetTestDiplomas")
-.WithTags("Test");
 app.MapControllers();
 app.Run();

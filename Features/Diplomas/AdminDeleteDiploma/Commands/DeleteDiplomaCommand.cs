@@ -1,0 +1,1 @@
+﻿public sealed record DeleteDiplomaCommand(Guid DiplomaId) : IRequest<Result<Deleted>>;
