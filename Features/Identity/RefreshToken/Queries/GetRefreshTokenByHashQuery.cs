@@ -1,3 +1,8 @@
-﻿namespace exam_system.Features.Identity.RefreshToken.Queries;
+﻿using exam_system.Features.Identity.RefreshToken.DTOs.Internal;
+using exam_system.Features.Shared;
 
-public record GetRefreshTokenByHashQuery();
+namespace exam_system.Features.Identity.RefreshToken.Queries;
+
+public record GetRefreshTokenByHashQuery(
+    string RawToken
+    ):IRequest<RequestResponse<RefreshTokenLookupResult>>;

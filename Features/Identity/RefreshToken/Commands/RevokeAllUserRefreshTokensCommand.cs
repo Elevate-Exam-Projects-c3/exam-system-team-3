@@ -1,6 +1,7 @@
-﻿namespace exam_system.Features.Identity.RefreshToken.Commands;
+﻿using exam_system.Features.Shared;
 
-public class RevokeAllUserRefreshTokensCommand
-{
-    
-}
+namespace exam_system.Features.Identity.RefreshToken.Commands;
+
+public record RevokeAllUserRefreshTokensCommand(
+    Guid UserId
+    ): IRequest<RequestResponse<bool>>;

@@ -1,6 +1,7 @@
-﻿namespace exam_system.Features.Identity.RefreshToken.Commands;
+﻿using exam_system.Features.Shared;
 
-public class MarkRefreshTokenUsedCommand
-{
-    
-}
+namespace exam_system.Features.Identity.RefreshToken.Commands;
+
+public record MarkRefreshTokenUsedCommand(
+    Guid TokenId
+    ): IRequest<RequestResponse<bool>>;

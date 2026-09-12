@@ -1,6 +1,9 @@
-﻿namespace exam_system.Features.Identity.RefreshToken.DTOs.Internal;
+﻿using exam_system.Common.Enums;
 
-public class RefreshedUserResult
-{
-    
-}
+namespace exam_system.Features.Identity.RefreshToken.DTOs.Internal;
+
+public record RefreshedUserResult(
+    Guid UserId,
+    string Email,
+    UserRole Role
+);
