@@ -30,7 +30,7 @@ public class LoginOrchestratorHandler(
 
         var authenticatedUser = authResult.Data!;
 
-        var accessToken = tokenService.GenerateAccessToken(authenticatedUser);
+        var accessToken = tokenService.GenerateAccessToken(authenticatedUser.UserId, authenticatedUser.Email, authenticatedUser.Role);
 
         var refreshTokenResult = await mediator.Send(
             new CreateRefreshTokenCommand(authenticatedUser.UserId),
