@@ -1,7 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
-using exam_system.Features.Identity.Login.DTOs.Internal;
+using exam_system.Common.Enums;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -14,14 +14,14 @@ public class TokenService(IOptions<JwtOptions> options) : ITokenService
 {
     
     private readonly JwtOptions  _options= options.Value;
-    public string GenerateAccessToken(AuthenticatedUserResult user)
+    public string GenerateAccessToken(Guid userId, string email, UserRole role)
     {
 
         var claims = new List<Claim>
         {
-            new(ClaimTypes.NameIdentifier, user.UserId.ToString()),
-            new(ClaimTypes.Email, user.Email),
-            new(ClaimTypes.Role, user.Role.ToString())
+            new(ClaimTypes.NameIdentifier, userId.ToString()),
+            new(ClaimTypes.Email, email),
+            new(ClaimTypes.Role, role.ToString())
 
         };
         
