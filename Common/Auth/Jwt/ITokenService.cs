@@ -1,10 +1,10 @@
-﻿using exam_system.Features.Identity.Login.DTOs.Internal;
+﻿using exam_system.Common.Enums;
 
 namespace  exam_system.Common.Auth.Jwt;
 
 public interface  ITokenService
 {
-    string GenerateAccessToken(AuthenticatedUserResult user);
+    string GenerateAccessToken(Guid userId, string email, UserRole role);
     string GenerateRefreshToken();
 }
 
