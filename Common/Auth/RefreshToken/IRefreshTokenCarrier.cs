@@ -3,4 +3,5 @@
 public interface IRefreshTokenCarrier
 {
     string? RawRefreshToken { get; set; }
+    bool ShouldClearCookie { get; set; }
 }
