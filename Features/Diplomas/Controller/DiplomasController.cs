@@ -1,6 +1,6 @@
 ﻿using exam_system.Features.Diplomas.GetDiplomas.DTOs;
 using exam_system.Features.Diplomas.GetDiplomas.Queries;
-using exam_system.Features.Enrollments.EnrollInDiploma.Commands;
+using exam_system.Features.Enrollments.EnrollInDiploma.Orchestrator;
 
 namespace exam_system.Features.Diplomas.Controller;
 
@@ -9,7 +9,7 @@ namespace exam_system.Features.Diplomas.Controller;
 [Authorize(Roles = "Student")]
 public sealed class DiplomasController(ISender sender) : ControllerBase
 {
- 
+
     [HttpGet]
     public async Task<ActionResult<ApiResponse<PaginatedResult<DiplomaListItemResponse>>>> GetDiplomas(
                                                         [FromQuery] int pageIndex = 1,
@@ -26,7 +26,7 @@ public sealed class DiplomasController(ISender sender) : ControllerBase
     [HttpPost("{id:guid}/enroll")]
     public async Task<ActionResult<ApiResponse<Guid>>> Enroll(Guid id, CancellationToken cancellationToken = default)
     {
-        var command = new EnrollInDiplomaCommand(id);
+        var command = new EnrollInDiplomaOrchestrator(id);
         var result = await sender.Send(command, cancellationToken);
         var apiResponse = result.ToRequestResponse().ToApiResponse();
 

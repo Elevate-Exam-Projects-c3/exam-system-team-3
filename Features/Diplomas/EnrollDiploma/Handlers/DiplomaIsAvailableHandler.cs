@@ -1,12 +1,12 @@
 ﻿using exam_system.Domain.Entities.Diplomas;
-using exam_system.Features.Diplomas.EnrollDiploma.Quiers;
+using exam_system.Features.Diplomas.EnrollDiploma.Queries;
 
 namespace exam_system.Features.Diplomas.EnrollDiploma.Handlers;
 
 public sealed class DiplomaIsAvailableHandler(IGenericRepository<Diploma> diplomaRepository)
-                                                 : IRequestHandler<DiplomaIsAvailableQuiery, bool>
+                                                 : IRequestHandler<DiplomaIsAvailableQuery, bool>
 {
-    public async Task<bool> Handle(DiplomaIsAvailableQuiery request, CancellationToken cancellationToken)
+    public async Task<bool> Handle(DiplomaIsAvailableQuery request, CancellationToken cancellationToken)
     {
         var diplomaIsAvailable = await diplomaRepository
                                                       .Get(diploma =>
