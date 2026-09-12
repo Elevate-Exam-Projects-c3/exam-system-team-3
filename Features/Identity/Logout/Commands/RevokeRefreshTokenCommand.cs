@@ -1,6 +1,7 @@
-﻿namespace exam_system.Features.Identity.Logout.Commands;
+﻿using exam_system.Features.Shared;
 
-public class RevokeRefreshTokenCommand
-{
-    
-}
+namespace exam_system.Features.Identity.Logout.Commands;
+
+public record RevokeRefreshTokenCommand(
+    string RawRefreshToken
+) : IRequest<RequestResponse<bool>>;

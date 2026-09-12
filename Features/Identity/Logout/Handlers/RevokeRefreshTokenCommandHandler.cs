@@ -1,6 +1,35 @@
-﻿namespace exam_system.Features.Identity.Logout.Handlers;
+﻿using System.Security.Cryptography;
+using System.Text;
+using exam_system.Features.Identity.Logout.Commands;
+using exam_system.Features.Shared;
+using exam_system.Persistence.DataAccess;
 
-public class RevokeRefreshTokenCommandHandler
+namespace exam_system.Features.Identity.Logout.Handlers;
+
+public class RevokeRefreshTokenCommandHandler(
+    IGenericRepository<Domain.Entities.Identity.RefreshToken> refreshTokenRepo,
+    IUnitOfWork unitOfWork)
+    : IRequestHandler<RevokeRefreshTokenCommand, RequestResponse<bool>>
 {
-    
+    public async Task<RequestResponse<bool>> Handle(
+        RevokeRefreshTokenCommand request,
+        CancellationToken cancellationToken)
+    {
+        var tokenHash = Convert.ToHexString(
+            SHA256.HashData(Encoding.UTF8.GetBytes(request.RawRefreshToken)));
+
+        var token = await refreshTokenRepo
+            .Get(t => t.Token == tokenHash)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        if (token is null)
+        {
+            return RequestResponse<bool>.Ok(true);
+        }
+
+        token.IsRevoked = true;
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return RequestResponse<bool>.Ok(true);
+    }
 }
