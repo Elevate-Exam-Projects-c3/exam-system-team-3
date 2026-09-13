@@ -38,6 +38,10 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
         return _dbSet.Where(predicate);
     }
 
+    public IQueryable<TResult> Select<TResult>(Expression<Func<T, TResult>> selector)
+    {
+        return _dbSet.Select(selector);
+    }
     public async Task AddAsync(T entity)
     {
         await _dbSet.AddAsync(entity);

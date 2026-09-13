@@ -35,4 +35,4 @@ namespace exam_system.Features.Quizzes.AdminDeleteQuiz.Controllers
         }
     }
 }
-}
+

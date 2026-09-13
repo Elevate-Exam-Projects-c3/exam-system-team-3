@@ -55,6 +55,23 @@ public class AppDbContext : DbContext
                 modelBuilder.Entity(entityType.ClrType).HasQueryFilter(lambda);
             }
         }
+
+        modelBuilder.Entity<QuizAttempt>()
+            .HasIndex(x => new
+            {
+                x.StudentId,
+                x.QuizId
+            })
+            .HasFilter("[Status] = 1")
+            .IsUnique();
+
+        modelBuilder.Entity<StudentQuestionAnswer>()
+            .HasIndex(x => new
+            {
+                x.AttemptId,
+                x.QuestionId
+            })
+            .IsUnique();
     }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

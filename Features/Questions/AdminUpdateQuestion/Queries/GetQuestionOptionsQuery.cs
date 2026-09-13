@@ -2,5 +2,5 @@
 
 namespace exam_system.Features.Questions.AdminUpdateQuestion.Queries
 {
-    public record GetQuestionQuery(Guid QuestionId ): IRequest<Question?>;
+    public record GetQuestionOptionsQuery(Guid QuestionId) : IRequest<List<QuestionOption>>;
 }

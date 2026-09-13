@@ -38,6 +38,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Features\Attempts\CheckRemainingTime\ViewModels\" />
     <Folder Include="Features\Questions\AdminCreateQuestion\Queries\" />
     <Folder Include="Features\Questions\AdminDeleteQuestion\Validators\" />
   </ItemGroup>
