@@ -11,7 +11,6 @@ namespace exam_system.Features.Questions.AdminUpdateQuestion.Handlers
     {
         public async Task<Result<Guid>> Handle(UpdateQuestionOptionOrchestrator request,CancellationToken cancellationToken)
         {
-            // 1. Get option
             var option = await _mediator.Send(new GetQuestionOptionQuery(request.OptionId),cancellationToken);
 
             if (option is null)
