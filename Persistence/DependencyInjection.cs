@@ -1,6 +1,7 @@
 using System.Reflection;
+using exam_system.Features.Diplomas.GetDiplomaDetail.Queries;
 using exam_system.Features.Shared.Behaviors;
-using exam_system.Infrastructure;
+
 using exam_system.Persistence.Context;
 using exam_system.Persistence.DataAccess;
 using FluentValidation;
@@ -31,7 +32,7 @@ public static class DependencyInjection
         services.AddMediatR(config =>
         {
             config.RegisterServicesFromAssembly(assembly);
-            config.AddOpenBehavior(typeof(ValidationBehavior<,>));
+            config.AddOpenBehavior(typeof(Features.Shared.Results.ValidationBehavior<,>));
         });
 
         services.AddValidatorsFromAssembly(assembly);
