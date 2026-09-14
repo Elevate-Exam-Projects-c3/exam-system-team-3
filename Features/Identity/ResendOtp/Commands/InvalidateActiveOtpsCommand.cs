@@ -1,3 +1,7 @@
-﻿namespace exam_system.Features.Identity.ResendOtp.Commands;
+﻿using Org.BouncyCastle.Ocsp;
 
-public record InvalidateActiveOtpsCommand();
+namespace exam_system.Features.Identity.ResendOtp.Commands;
+
+public record InvalidateActiveOtpsCommand(
+    string Email):IRequest;
+    
