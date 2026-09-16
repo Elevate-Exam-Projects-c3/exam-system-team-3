@@ -2,6 +2,7 @@
 using exam_system.Domain.Entities.Diplomas;
 using exam_system.Features.Diplomas.GetDiplomas.DTOs;
 using exam_system.Features.Diplomas.GetDiplomas.Queries;
+using exam_system.Features.Shared.Interfaces;
 
 
 namespace exam_system.Features.Diplomas.GetDiplomaDetail.Handlers;
