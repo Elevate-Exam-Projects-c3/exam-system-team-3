@@ -9,6 +9,8 @@ namespace exam_system.Features.Identity.VerifyEmailOtp.Controllers;
 
 [ApiController]
 [Route("api/identity")]
+
+[Tags("Identity")]
 public class VerifyEmailOtpController(IMediator mediator) : ControllerBase
 {
     [AllowAnonymous]

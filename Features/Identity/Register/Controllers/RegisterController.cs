@@ -8,6 +8,7 @@ namespace exam_system.Features.Identity.Register.Controllers;
 
 [ApiController]
 [Route("api/identity")]
+[Tags("Identity")]
 public class RegisterController(IMediator mediator ) : ControllerBase
 {
     [AllowAnonymous]
