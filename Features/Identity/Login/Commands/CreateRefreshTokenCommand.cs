@@ -4,4 +4,4 @@ namespace exam_system.Features.Identity.Login.Commands;
 
 public record CreateRefreshTokenCommand(
     Guid UserId
-) : IRequest<RequestResponse<string>>;
+) : IRequest<Result<string>>;

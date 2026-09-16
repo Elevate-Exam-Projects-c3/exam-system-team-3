@@ -5,4 +5,4 @@ namespace exam_system.Features.Identity.RefreshToken.Orchestrators;
 
 public record RefreshTokenOrchestrator(
     string  RawRefreshToken
-    ):IRequest<RequestResponse<RefreshTokenResponse>>;
+    ):IRequest<Result<RefreshTokenResponse>>;

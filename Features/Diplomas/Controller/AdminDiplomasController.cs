@@ -16,7 +16,7 @@ public sealed class AdminDiplomasController(ISender sender) : ControllerBase
                 ([FromBody] CreateDiplomaCommand command, CancellationToken cancellationToken = default)
     {
         var result = await sender.Send(command, cancellationToken);
-        var apiResponse = result.ToRequestResponse().ToApiResponse();
+        var apiResponse = result.ToApiResponse();
         return StatusCode(apiResponse.StatusCode, apiResponse);
     }
 
@@ -25,7 +25,7 @@ public sealed class AdminDiplomasController(ISender sender) : ControllerBase
                     ([FromBody] UpdateDiplomaCommand command, CancellationToken cancellationToken = default)
     {
         var result = await sender.Send(command, cancellationToken);
-        var apiResponse = result.ToRequestResponse().ToApiResponse();
+        var apiResponse = result.ToApiResponse();
         return StatusCode(apiResponse.StatusCode, apiResponse);
     }
 
@@ -35,7 +35,7 @@ public sealed class AdminDiplomasController(ISender sender) : ControllerBase
     {
         var command = new DeleteDiplomaOrchestratorL(id);
         var result = await sender.Send(command, cancellationToken);
-        var apiResponse = result.ToRequestResponse().ToApiResponse();
+        var apiResponse = result.ToApiResponse();
         return StatusCode(apiResponse.StatusCode, apiResponse);
     }
 }

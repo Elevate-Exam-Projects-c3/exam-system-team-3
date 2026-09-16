@@ -1,19 +1,16 @@
-﻿using exam_system.Common.Enums;
-using exam_system.Domain.Entities.Identity;
+﻿using exam_system.Domain.Entities.Identity;
 using exam_system.Features.Identity.Login.Commands;
 using exam_system.Features.Identity.Login.DTOs.Internal;
-using exam_system.Features.Shared;
 using exam_system.Features.Shared.Results.ErrorCodes;
-using exam_system.Persistence.DataAccess;
 
 namespace exam_system.Features.Identity.Login.Handlers;
 
 public class AuthenticateUserCommandHandler(
     IGenericRepository<ApplicationUser> userRepo,
     IUnitOfWork unitOfWork)
-    : IRequestHandler<AuthenticateUserCommand, RequestResponse<AuthenticatedUserResult>>
+    : IRequestHandler<AuthenticateUserCommand, Result<AuthenticatedUserResult>>
 {
-    public async Task<RequestResponse<AuthenticatedUserResult>> Handle(
+    public async Task<Result<AuthenticatedUserResult>> Handle(
         AuthenticateUserCommand request,
         CancellationToken cancellationToken)
     {
@@ -25,17 +22,17 @@ public class AuthenticateUserCommandHandler(
 
         if (user is null)
         {
-            return RequestResponse<AuthenticatedUserResult>.Fail(LoginErrors.InvalidCredentials);
+            return Result<AuthenticatedUserResult>.Failure(LoginErrors.InvalidCredentials);
         }
 
         if (user.LockoutEnd is not null && user.LockoutEnd > DateTime.UtcNow)
         {
-            return RequestResponse<AuthenticatedUserResult>.Fail(LoginErrors.AccountLocked);
+            return Result<AuthenticatedUserResult>.Failure(LoginErrors.AccountLocked);
         }
 
         if (user.AccountStatus != AccountStatus.Active || !user.EmailConfirmed)
         {
-            return RequestResponse<AuthenticatedUserResult>.Fail(LoginErrors.AccountNotVerified);
+            return Result<AuthenticatedUserResult>.Failure(LoginErrors.AccountNotVerified);
         }
 
         var isPasswordValid = BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash);
@@ -51,14 +48,14 @@ public class AuthenticateUserCommandHandler(
 
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return RequestResponse<AuthenticatedUserResult>.Fail(LoginErrors.InvalidCredentials);
+            return Result<AuthenticatedUserResult>.Failure(LoginErrors.InvalidCredentials);
         }
 
         user.FailedLoginAttempts = 0;
         user.LockoutEnd = null;
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return RequestResponse<AuthenticatedUserResult>.Ok(
+        return Result<AuthenticatedUserResult>.Success(
             new AuthenticatedUserResult(user.Id, user.Email, user.Role));
     }
 }

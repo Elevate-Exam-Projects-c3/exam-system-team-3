@@ -6,4 +6,4 @@ namespace exam_system.Features.Identity.Login.Commands;
 public record AuthenticateUserCommand(
     string Email,
     string Password
-) : IRequest<RequestResponse<AuthenticatedUserResult>>;
+) : IRequest<Result<AuthenticatedUserResult>>;

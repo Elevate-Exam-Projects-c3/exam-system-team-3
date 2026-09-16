@@ -16,6 +16,6 @@ public sealed class CreateDiplomaCommandHandler(IGenericRepository<Diploma> dipl
 
         await diplomaRepository.AddAsync(diploma);
         await unitOfWork.SaveChangesAsync(cancellationToken);
-        return Result<Created>.Success(Result.Created);
+        return Result.Created;
     }
 }

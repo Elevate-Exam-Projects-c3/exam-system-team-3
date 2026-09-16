@@ -9,19 +9,19 @@ namespace exam_system.Features.Identity.RefreshToken.Handlers;
 
 public  class GetUserByIdQueryHandler(
     IGenericRepository<ApplicationUser> userRepo)
-:IRequestHandler<GetUserByIdQuery,RequestResponse<RefreshedUserResult>>
+:IRequestHandler<GetUserByIdQuery, Result<RefreshedUserResult>>
 {
-    public async Task<RequestResponse<RefreshedUserResult>> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
+    public async Task<Result<RefreshedUserResult>> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
     {
         var user = await userRepo.GetByIdAsync(request.UserId);
 
         if (user is null)
         {
-            return RequestResponse<RefreshedUserResult>.Fail(
+            return Result<RefreshedUserResult>.Failure(
                 RefreshErrors.UserNotFound);
         }
         
-        return RequestResponse<RefreshedUserResult>.Ok(
+        return Result<RefreshedUserResult>.Success(
             new RefreshedUserResult (user.Id,user.Email,user.Role));
         
     }

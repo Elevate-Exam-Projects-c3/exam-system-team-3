@@ -27,8 +27,7 @@ public class LoginController(
             orchestrator,
             cancellationToken);
 
-        if (result.Success &&
-            refreshTokenCarrier.RawRefreshToken is not null)
+        if (result.IsSuccess && refreshTokenCarrier.RawRefreshToken is not null)
         {
             Response.Cookies.Append(
                 "refreshToken",

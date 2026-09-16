@@ -1,14 +1,3 @@
-using System.Reflection;
-using exam_system.Features.Diplomas.GetDiplomaDetail.Queries;
-using exam_system.Features.Shared.Behaviors;
-
-using exam_system.Persistence.Context;
-using exam_system.Persistence.DataAccess;
-using FluentValidation;
-using Mapster;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace exam_system.Persistence;
 
@@ -32,7 +21,7 @@ public static class DependencyInjection
         services.AddMediatR(config =>
         {
             config.RegisterServicesFromAssembly(assembly);
-            config.AddOpenBehavior(typeof(Features.Shared.Results.ValidationBehavior<,>));
+            config.AddOpenBehavior(typeof(ValidationBehavior<,>));
         });
 
         services.AddValidatorsFromAssembly(assembly);

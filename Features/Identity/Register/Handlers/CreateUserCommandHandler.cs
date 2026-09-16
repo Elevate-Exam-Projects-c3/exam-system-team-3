@@ -8,9 +8,9 @@ namespace exam_system.Features.Identity.Register.Handlers;
 
 public class CreateUserCommandHandler(
     IGenericRepository<ApplicationUser> userRepo)
-    : IRequestHandler<CreateUserCommand, RequestResponse<Guid>>
+    : IRequestHandler<CreateUserCommand, Result<Guid>>
 {
-    public async Task<RequestResponse<Guid>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
         var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password, workFactor: 12);
 
@@ -28,6 +28,6 @@ public class CreateUserCommandHandler(
 
         await userRepo.AddAsync(user);
 
-        return RequestResponse<Guid>.Ok(user.Id);
+        return Result<Guid>.Success(user.Id);
     }
 }

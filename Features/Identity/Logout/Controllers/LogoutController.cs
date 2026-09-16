@@ -22,8 +22,10 @@ public class LogoutController(IMediator mediator) : ControllerBase
 
         Response.Cookies.Delete("refreshToken");
 
-        var response = RequestResponse<object>.Ok(
-            new { }, "Logged out successfully.").ToApiResponse();
+        var result = Result<object>.Success(new { });
+
+        var response = result.ToApiResponse();
+
         return StatusCode(response.StatusCode, response);
     }
 }

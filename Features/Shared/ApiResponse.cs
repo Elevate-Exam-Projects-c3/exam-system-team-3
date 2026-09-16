@@ -9,15 +9,6 @@ public sealed class ApiResponse<T>
     public IDictionary<string, string[]>? Errors { get; init; }
     public DateTime Timestamp { get; init; } = DateTime.UtcNow;
 
-    public static ApiResponse<T> FromResult(RequestResponse<T> result)
-        => new()
-        {
-            Success = result.Success,
-            StatusCode = result.StatusCode,
-            Message = result.Message,
-            Data = result.Data,
-            Errors = result.Errors
-        };
 
     public static ApiResponse<T> Ok(
         T data,

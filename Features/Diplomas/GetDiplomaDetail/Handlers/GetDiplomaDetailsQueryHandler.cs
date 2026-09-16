@@ -4,9 +4,9 @@ using exam_system.Features.Diplomas.GetDiplomas.DTOs;
 using exam_system.Features.Diplomas.GetDiplomas.Queries;
 
 
-namespace exam_system.Features.Diplomas.GetDiplomas.Handlers;
+namespace exam_system.Features.Diplomas.GetDiplomaDetail.Handlers;
 
-public sealed class GetDiplomasQueryHandler(IGenericRepository<Diploma> genericRepository,
+public sealed class GetDiplomaDetailsQueryHandler(IGenericRepository<Diploma> genericRepository,
     ICurrentUser currentUser) : IRequestHandler<GetDiplomasQuery, Result<PaginatedResult<DiplomaListItemResponse>>>
 {
 

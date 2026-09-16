@@ -7,20 +7,20 @@ namespace exam_system.Features.Identity.RefreshToken.Handlers;
 public class MarkRefreshTokenUsedCommandHandler(
     IGenericRepository<Domain.Entities.Identity.RefreshToken> refreshTokenRepo,
     IUnitOfWork  unitOfWork
-    ):IRequestHandler<MarkRefreshTokenUsedCommand,RequestResponse<bool>>
+    ):IRequestHandler<MarkRefreshTokenUsedCommand, Result<bool>>
 {
-    public async Task<RequestResponse<bool>> Handle(MarkRefreshTokenUsedCommand request, CancellationToken cancellationToken)
+    public async Task<Result<bool>> Handle(MarkRefreshTokenUsedCommand request, CancellationToken cancellationToken)
     {
         var token = await refreshTokenRepo.GetByIdAsync(request.TokenId);
 
         if (token is null)
         {
-            return RequestResponse<bool>.Ok(false);
+            return Result<bool>.Success(false);
         }
 
         token.IsUsed = true;
         await unitOfWork.SaveChangesAsync(cancellationToken);
         
-        return RequestResponse<bool>.Ok(true);
+        return Result<bool>.Success(true);
     }
 }

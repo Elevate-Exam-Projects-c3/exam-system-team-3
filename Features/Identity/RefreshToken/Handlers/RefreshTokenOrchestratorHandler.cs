@@ -5,7 +5,6 @@ using exam_system.Features.Identity.RefreshToken.Commands;
 using exam_system.Features.Identity.RefreshToken.DTOs.Response;
 using exam_system.Features.Identity.RefreshToken.Orchestrators;
 using exam_system.Features.Identity.RefreshToken.Queries;
-using exam_system.Features.Shared;
 using exam_system.Features.Shared.Results.ErrorCodes;
 
 namespace exam_system.Features.Identity.RefreshToken.Handlers;
@@ -15,27 +14,35 @@ public class RefreshTokenOrchestratorHandler
     IMediator mediator,
     ITokenService tokenService,
     IRefreshTokenCarrier refreshTokenCarrier)
-:IRequestHandler<RefreshTokenOrchestrator,RequestResponse<RefreshTokenResponse>>
+:IRequestHandler<RefreshTokenOrchestrator, Result<RefreshTokenResponse>>
 {
-    public async Task<RequestResponse<RefreshTokenResponse>> Handle(RefreshTokenOrchestrator request, CancellationToken cancellationToken)
+    public async Task<Result<RefreshTokenResponse>> Handle(RefreshTokenOrchestrator request, CancellationToken cancellationToken)
     {
         var lookUpResult = await mediator.Send(
             new GetRefreshTokenByHashQuery(request.RawRefreshToken), cancellationToken);
 
 
-        if (!lookUpResult.Success)
+        //if (!lookUpResult.Success)
+        //{
+        //    refreshTokenCarrier.ShouldClearCookie = true;
+        //    return Result<RefreshTokenResponse>.Failure(
+        //        RefreshErrors.TokenNotFound);
+        //}
+        
+        if (lookUpResult.IsError)
         {
             refreshTokenCarrier.ShouldClearCookie = true;
-            return RequestResponse<RefreshTokenResponse>.Fail(
-                RefreshErrors.TokenNotFound);
+
+            return Result<RefreshTokenResponse>.Failure(lookUpResult.Errors);
         }
 
-        var tokenInfo = lookUpResult.Data!;
+        //var tokenInfo = lookUpResult.Data!;
+        var tokenInfo = lookUpResult.Value;
 
         if (tokenInfo.IsRevoked)
         {
             refreshTokenCarrier.ShouldClearCookie = true;
-            return RequestResponse<RefreshTokenResponse>.Fail(
+            return Result<RefreshTokenResponse>.Failure(
                 RefreshErrors.TokenRevoked);
         }
 
@@ -43,7 +50,7 @@ public class RefreshTokenOrchestratorHandler
         {
             await mediator.Send(
                 new RevokeAllUserRefreshTokensCommand(tokenInfo.UserId),cancellationToken);
-            return RequestResponse<RefreshTokenResponse>.Fail(
+            return Result<RefreshTokenResponse>.Failure(
                 RefreshErrors.TokenReuseDetected);
         }
 
@@ -51,7 +58,7 @@ public class RefreshTokenOrchestratorHandler
         {
             refreshTokenCarrier.ShouldClearCookie = true;
             
-            return RequestResponse<RefreshTokenResponse>.Fail(
+            return Result<RefreshTokenResponse>.Failure(
                 RefreshErrors.TokenExpired);
         }
 
@@ -61,34 +68,43 @@ public class RefreshTokenOrchestratorHandler
 
         var userResult = await mediator.Send(new GetUserByIdQuery(tokenInfo.UserId), cancellationToken);
 
-        if (!userResult.Success)
+        //if (!userResult.Success)
+        //{
+        //    refreshTokenCarrier.ShouldClearCookie = true;
+            
+        //    return Result<RefreshTokenResponse>.Failure(
+        //        RefreshErrors.UserNotFound);
+        //}
+
+        //var refreshedUser = userResult.Data!;
+        if (userResult.IsError)
         {
             refreshTokenCarrier.ShouldClearCookie = true;
-            
-            return RequestResponse<RefreshTokenResponse>.Fail(
-                RefreshErrors.UserNotFound);
+
+            return Result<RefreshTokenResponse>.Failure(userResult.Errors);
         }
 
-        var refreshedUser = userResult.Data!;
+        var refreshedUser = userResult.Value;
 
         var accessToken = tokenService.GenerateAccessToken(
             refreshedUser.UserId, refreshedUser.Email, refreshedUser.Role);
 
         var newRefreshTokenResult = await mediator.Send(
             new CreateRefreshTokenCommand(refreshedUser.UserId), cancellationToken);
-        if (!newRefreshTokenResult.Success)
+        //if (!newRefreshTokenResult.Success)
+        //{
+        //    return Result<RefreshTokenResponse>.Failure(
+        //        newRefreshTokenResult.Message,
+        //        newRefreshTokenResult.StatusCode,
+        //        newRefreshTokenResult.Errors);
+        //}
+        if (newRefreshTokenResult.IsError)
         {
-            return RequestResponse<RefreshTokenResponse>.Fail(
-                newRefreshTokenResult.Message,
-                newRefreshTokenResult.StatusCode,
+            return Result<RefreshTokenResponse>.Failure(
                 newRefreshTokenResult.Errors);
         }
-
-        refreshTokenCarrier.RawRefreshToken = newRefreshTokenResult.Data;
-        
-        
-        
-        return RequestResponse<RefreshTokenResponse>.Ok(
+        refreshTokenCarrier.RawRefreshToken = newRefreshTokenResult.Value;
+        return Result<RefreshTokenResponse>.Success(
             new RefreshTokenResponse(accessToken,refreshedUser.Role.ToString(),refreshedUser.UserId));
 
     }
