@@ -8,14 +8,31 @@ public static class ApiResponseExtensions
     {
         if (result.IsSuccess)
         {
-            return ApiResponse<T>.Ok(result.Value);
+            var statusCode = result.Value switch
+            {
+                Created => StatusCodes.Status201Created,
+                _ => StatusCodes.Status200OK
+            };
+
+            return ApiResponse<T>.Ok(
+                result.Value,
+                statusCode: statusCode);
         }
 
-        var error = result.TopError;
+        var topError = result.TopError;
+
+        var errors = result.Errors
+            .GroupBy(error => error.Code)
+            .ToDictionary(
+                group => group.Key,
+                group => group
+                    .Select(error => error.Description)
+                    .ToArray());
 
         return ApiResponse<T>.Fail(
-            message: error.Description,
-            statusCode: MapErrorKindToStatusCode(error.Type));
+            message: topError.Description,
+            statusCode: MapErrorKindToStatusCode(topError.Type),
+            errors: errors);
     }
 
     private static int MapErrorKindToStatusCode(ErrorKind errorKind) => errorKind switch
@@ -27,6 +44,8 @@ public static class ApiResponseExtensions
         ErrorKind.Conflict => StatusCodes.Status409Conflict,
         ErrorKind.Gone => StatusCodes.Status410Gone,
         ErrorKind.TooManyRequests => StatusCodes.Status429TooManyRequests,
+        ErrorKind.Failure => StatusCodes.Status500InternalServerError,
+        ErrorKind.Unexpected => StatusCodes.Status500InternalServerError,
         _ => StatusCodes.Status500InternalServerError
     };
 }
