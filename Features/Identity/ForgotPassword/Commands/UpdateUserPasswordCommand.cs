@@ -1,3 +1,4 @@
-﻿namespace exam_system.Features.Identity.ForgotPassword.Commands;
+﻿
+namespace exam_system.Features.Identity.ForgotPassword.Commands;
 
-public record UpdateUserPasswordCommand();
+public record UpdateUserPasswordCommand(Guid UserId, string NewPassword) : IRequest<Result<Updated>>;

@@ -2,4 +2,4 @@
 
 public record CreatePasswordResetOtpCommand(
     Guid  UserId,
-    string Email):IRequest<RequestResponse<string>>;
+    string Email):IRequest<Result<string>>;

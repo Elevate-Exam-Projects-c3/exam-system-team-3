@@ -1,3 +1,5 @@
-﻿namespace exam_system.Features.Identity.ForgotPassword.Queries;
+﻿using exam_system.Features.Identity.ForgotPassword.DTOs.Internal;
 
-public record GetActivePasswordResetOtpQuery();
+namespace exam_system.Features.Identity.ForgotPassword.Queries;
+
+public record GetActivePasswordResetOtpQuery(string Email) : IRequest<PasswordResetOtpLookupResult?>;

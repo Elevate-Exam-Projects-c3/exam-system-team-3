@@ -1,3 +1,5 @@
-﻿namespace exam_system.Features.Identity.ForgotPassword.Commands;
+﻿using exam_system.Features.Shared.Results;
 
-public record InvalidateResetTokenCommand();
+namespace exam_system.Features.Identity.ForgotPassword.Commands;
+
+public record InvalidateResetTokenCommand(Guid OtpId) : IRequest<Result<Updated>>;
