@@ -7,9 +7,9 @@ namespace exam_system.Features.Identity.ForgotPassword.Handlers;
 
 public class CreatePasswordResetOtpCommandHandler(
     IGenericRepository<PasswordResetOtp>  otpRpo
-    ):IRequestHandler<CreatePasswordResetOtpCommand,RequestResponse<string>>
+    ):IRequestHandler<CreatePasswordResetOtpCommand,Result<string>>
 {
-    public async Task<RequestResponse<string>> Handle(CreatePasswordResetOtpCommand request, CancellationToken cancellationToken)
+    public async Task<Result<string>> Handle(CreatePasswordResetOtpCommand request, CancellationToken cancellationToken)
     {
         var plainOtp = RandomNumberGenerator.GetInt32(100000, 1000000).ToString();
         
@@ -29,6 +29,6 @@ public class CreatePasswordResetOtpCommandHandler(
 
         await otpRpo.AddAsync(otp);
 
-        return RequestResponse<string>.Ok(plainOtp);
+        return Result<string>.Success(plainOtp);
     }
 }
