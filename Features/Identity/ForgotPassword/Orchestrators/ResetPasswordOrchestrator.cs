@@ -1,6 +1,8 @@
-﻿namespace exam_system.Features.Identity.ForgotPassword.Orchestrators;
+﻿using exam_system.Features.Identity.ForgotPassword.DTOs.Response;
+using exam_system.Features.Shared.Results;
 
-public class ResetPasswordOrchestrator
-{
-    
-}
+namespace exam_system.Features.Identity.ForgotPassword.Orchestrators;
+
+public record ResetPasswordOrchestrator(
+    string Email, string ResetToken, string NewPassword, string ConfirmPassword
+) : IRequest<Result<ResetPasswordResponse>>;

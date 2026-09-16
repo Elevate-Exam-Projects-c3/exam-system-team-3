@@ -3,4 +3,4 @@
 namespace exam_system.Features.Identity.ForgotPassword.Orchestrators;
 
 public record ForgotPasswordOrchestrator(
-    string Email) : IRequest<RequestResponse<ForgotPasswordResponse>>;
+    string Email) : IRequest<Result<ForgotPasswordResponse>>;

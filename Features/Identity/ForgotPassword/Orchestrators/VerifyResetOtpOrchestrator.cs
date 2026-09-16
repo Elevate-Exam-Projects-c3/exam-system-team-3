@@ -1,6 +1,5 @@
-﻿namespace exam_system.Features.Identity.ForgotPassword.Orchestrators;
+﻿using exam_system.Features.Identity.ForgotPassword.DTOs.Response;
 
-public class VerifyResetOtpOrchestrator
-{
-    
-}
+namespace exam_system.Features.Identity.ForgotPassword.Orchestrators;
+
+public record VerifyResetOtpOrchestrator(string Email, string Otp) : IRequest<Result<VerifyResetOtpResponse>>;
