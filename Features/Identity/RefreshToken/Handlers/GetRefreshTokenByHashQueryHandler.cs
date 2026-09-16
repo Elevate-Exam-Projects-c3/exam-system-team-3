@@ -12,10 +12,10 @@ namespace exam_system.Features.Identity.RefreshToken.Handlers;
 
 public class GetRefreshTokenByHashQueryHandler(
     IGenericRepository<Domain.Entities.Identity.RefreshToken> refreshTokenRepo)
-:IRequestHandler<GetRefreshTokenByHashQuery,RequestResponse<RefreshTokenLookupResult>>
+:IRequestHandler<GetRefreshTokenByHashQuery, Result<RefreshTokenLookupResult>>
     
 {
-    public async Task<RequestResponse<RefreshTokenLookupResult>> Handle(GetRefreshTokenByHashQuery request, CancellationToken cancellationToken)
+    public async Task<Result<RefreshTokenLookupResult>> Handle(GetRefreshTokenByHashQuery request, CancellationToken cancellationToken)
     {
 
         var tokenHash = Convert.ToHexString(
@@ -27,11 +27,11 @@ public class GetRefreshTokenByHashQueryHandler(
 
         if (token is null)
         {
-            return RequestResponse<RefreshTokenLookupResult>.Fail(
+            return Result<RefreshTokenLookupResult>.Failure(
                 RefreshErrors.TokenNotFound);
         }
         
-        return RequestResponse<RefreshTokenLookupResult>.Ok(
+        return Result<RefreshTokenLookupResult>.Success(
             new RefreshTokenLookupResult(token.Id, token.UserId,token.IsUsed,token.IsRevoked,token.ExpiresAt));
         
         

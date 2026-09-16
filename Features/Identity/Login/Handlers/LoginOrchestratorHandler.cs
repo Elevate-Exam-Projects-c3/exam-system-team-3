@@ -11,9 +11,9 @@ public class LoginOrchestratorHandler(
     IMediator mediator,
     ITokenService tokenService,
     IRefreshTokenCarrier refreshTokenCarrier)
-    : IRequestHandler<LoginOrchestrator, RequestResponse<LoginResponse>>
+    : IRequestHandler<LoginOrchestrator, Result<LoginResponse>>
 {
-    public async Task<RequestResponse<LoginResponse>> Handle(
+    public async Task<Result<LoginResponse>> Handle(
         LoginOrchestrator request,
         CancellationToken cancellationToken)
     {
@@ -22,13 +22,12 @@ public class LoginOrchestratorHandler(
             new AuthenticateUserCommand(request.Email, request.Password),
             cancellationToken);
 
-        if (!authResult.Success)
+        if (authResult.IsError)
         {
-            return RequestResponse<LoginResponse>.Fail(
-                authResult.Message, authResult.StatusCode, authResult.Errors);
+            return Result<LoginResponse>.Failure(authResult.Errors);
         }
 
-        var authenticatedUser = authResult.Data!;
+        var authenticatedUser = authResult.Value;
 
         var accessToken = tokenService.GenerateAccessToken(authenticatedUser.UserId, authenticatedUser.Email, authenticatedUser.Role);
 
@@ -36,15 +35,19 @@ public class LoginOrchestratorHandler(
             new CreateRefreshTokenCommand(authenticatedUser.UserId),
             cancellationToken);
 
-        if (!refreshTokenResult.Success)
+        //if (!refreshTokenResult.Success)
+        //{
+        //    return Result<LoginResponse>.Failure(
+        //        refreshTokenResult.Message, refreshTokenResult.StatusCode, refreshTokenResult.Errors);
+        //}
+        if (refreshTokenResult.IsError)
         {
-            return RequestResponse<LoginResponse>.Fail(
-                refreshTokenResult.Message, refreshTokenResult.StatusCode, refreshTokenResult.Errors);
+            return Result<LoginResponse>.Failure(refreshTokenResult.Errors);
         }
 
-        refreshTokenCarrier.RawRefreshToken = refreshTokenResult.Data;
+        refreshTokenCarrier.RawRefreshToken = refreshTokenResult.Value;
 
-        return RequestResponse<LoginResponse>.Ok(
+        return Result<LoginResponse>.Success(
             new LoginResponse(accessToken, authenticatedUser.Role.ToString(), authenticatedUser.UserId));
     }
 }

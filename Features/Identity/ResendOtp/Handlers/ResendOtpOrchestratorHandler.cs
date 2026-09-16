@@ -5,7 +5,6 @@ using exam_system.Features.Identity.ResendOtp.DTOs.Response;
 using exam_system.Features.Identity.ResendOtp.Orchestrators;
 using exam_system.Features.Identity.VerifyEmailOtp.Queries;
 using exam_system.Features.Shared.Results.ErrorCodes;
-using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace exam_system.Features.Identity.ResendOtp.Handlers;
 
@@ -14,9 +13,9 @@ public class ResendOtpOrchestratorHandler(
     IUnitOfWork unitOfWork,
     IEmailService  emailService,
     ILogger<ResendOtpOrchestratorHandler> logger
-    ):IRequestHandler<ResendOtpOrchestrator,RequestResponse<ResendOtpResponse>>
+    ):IRequestHandler<ResendOtpOrchestrator,Result<ResendOtpResponse>>
 {
-    public async Task<RequestResponse<ResendOtpResponse>> Handle(ResendOtpOrchestrator request, CancellationToken cancellationToken)
+    public async Task<Result<ResendOtpResponse>> Handle(ResendOtpOrchestrator request, CancellationToken cancellationToken)
     {
         var normalizedEmail = request.Email.Trim().ToLower();
 
@@ -25,14 +24,12 @@ public class ResendOtpOrchestratorHandler(
             new GetUserByEmailQuery(normalizedEmail), cancellationToken);
         if (user is null)
         {
-            return RequestResponse<ResendOtpResponse>.Fail(
-                ResendOtpErrors.UserNotFound);
+            return Result<ResendOtpResponse>.Failure(ResendOtpErrors.UserNotFound);
         }
 
         if (user.EmailConfirmed)
         {
-            return RequestResponse<ResendOtpResponse>.Fail(
-                ResendOtpErrors.AlreadyVerified);
+            return Result<ResendOtpResponse>.Failure(ResendOtpErrors.AlreadyVerified);
         }
 
         await mediator.Send(new InvalidateActiveOtpsCommand(normalizedEmail), cancellationToken);
@@ -40,14 +37,13 @@ public class ResendOtpOrchestratorHandler(
         var createOtpResult = await mediator.Send(
             new CreateEmailOtpCommand(user.Id, normalizedEmail), cancellationToken);
 
-        if (!createOtpResult.Success)
+        if (createOtpResult.IsError)
         {
-            return RequestResponse<ResendOtpResponse>.Fail(
-                createOtpResult.Message, createOtpResult.StatusCode, createOtpResult.Errors);
+            return Result<ResendOtpResponse>.Failure(createOtpResult.Errors);
         }
 
 
-        var plainOtp = createOtpResult.Data!;
+        var plainOtp = createOtpResult.Value!;
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
@@ -64,7 +60,7 @@ public class ResendOtpOrchestratorHandler(
             
         }
 
-        return RequestResponse<ResendOtpResponse>.Ok(
+        return Result<ResendOtpResponse>.Success(
             new ResendOtpResponse(normalizedEmail, "A new verification code has been sent to your email."));
     }
 }

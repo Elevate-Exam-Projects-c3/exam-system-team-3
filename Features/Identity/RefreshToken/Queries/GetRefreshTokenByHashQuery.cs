@@ -5,4 +5,4 @@ namespace exam_system.Features.Identity.RefreshToken.Queries;
 
 public record GetRefreshTokenByHashQuery(
     string RawToken
-    ):IRequest<RequestResponse<RefreshTokenLookupResult>>;
+    ):IRequest<Result<RefreshTokenLookupResult>>;

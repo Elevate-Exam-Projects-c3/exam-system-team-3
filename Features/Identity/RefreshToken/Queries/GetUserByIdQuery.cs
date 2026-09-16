@@ -6,4 +6,4 @@ namespace exam_system.Features.Identity.RefreshToken.Queries;
 public record GetUserByIdQuery
 (
     Guid UserId
-    ) : IRequest<RequestResponse<RefreshedUserResult>>;
+    ) : IRequest<Result<RefreshedUserResult>>;

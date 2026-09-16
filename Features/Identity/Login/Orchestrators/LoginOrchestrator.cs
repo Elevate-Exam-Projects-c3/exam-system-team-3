@@ -7,4 +7,4 @@ namespace exam_system.Features.Identity.Login.Orchestrators;
 public record LoginOrchestrator(
     string Email,
     string Password
-) :IRequest<RequestResponse<LoginResponse>>;
+) :IRequest<Result<LoginResponse>>;

@@ -11,9 +11,9 @@ public class CreateRefreshTokenCommandHandler(
     IGenericRepository<Domain.Entities.Identity.RefreshToken> refreshTokenRepo,
     IUnitOfWork unitOfWork,
     ITokenService tokenService)
-    : IRequestHandler<CreateRefreshTokenCommand, RequestResponse<string>>
+    : IRequestHandler<CreateRefreshTokenCommand, Result<string>>
 {
-    public async Task<RequestResponse<string>> Handle(
+    public async Task<Result<string>> Handle(
         CreateRefreshTokenCommand request,
         CancellationToken cancellationToken)
     {
@@ -34,6 +34,6 @@ public class CreateRefreshTokenCommandHandler(
         await refreshTokenRepo.AddAsync(refreshTokenEntity);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return RequestResponse<string>.Ok(rawRefreshToken);
+        return Result<string>.Success(rawRefreshToken);
     }
 }

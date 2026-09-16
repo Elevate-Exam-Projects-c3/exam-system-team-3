@@ -16,9 +16,9 @@ public class RegisterOrchestratorHandler(
     IUnitOfWork unitOfWork,
     IEmailService emailService,
     ILogger<RegisterOrchestratorHandler> logger)
-    : IRequestHandler<RegisterOrchestrator, RequestResponse<RegisterUserResponse>>
+    : IRequestHandler<RegisterOrchestrator, Result<RegisterUserResponse>>
 {
-    public async Task<RequestResponse<RegisterUserResponse>> Handle(
+    public async Task<Result<RegisterUserResponse>> Handle(
         RegisterOrchestrator request,
         CancellationToken cancellationToken)
     {
@@ -29,7 +29,7 @@ public class RegisterOrchestratorHandler(
 
         if (emailExists)
         {
-            return RequestResponse<RegisterUserResponse>.Fail(
+            return Result<RegisterUserResponse>.Failure(
                 RegisterUserErrors.EmailAlreadyRegistered);
         }
 
@@ -37,29 +37,33 @@ public class RegisterOrchestratorHandler(
             new CreateUserCommand(request.FullName, normalizedEmail, request.Password),
             cancellationToken);
 
-        if (!createUserResult.Success)
+        //if (!createUserResult.Success)
+        //{
+        //    return Result<RegisterUserResponse>.Failure(
+        //        createUserResult.Message,
+        //        createUserResult.StatusCode,
+        //        createUserResult.Errors);
+        //}
+
+        //var userId = createUserResult.Data!;
+        if (createUserResult.IsError)
         {
-            return RequestResponse<RegisterUserResponse>.Fail(
-                createUserResult.Message,
-                createUserResult.StatusCode,
-                createUserResult.Errors);
+            return Result<RegisterUserResponse>.Failure(createUserResult.Errors);
         }
 
-        var userId = createUserResult.Data!;
+        var userId = createUserResult.Value;
 
         var createOtpResult = await mediator.Send(
             new CreateEmailOtpCommand(userId, normalizedEmail),
             cancellationToken);
 
-        if (!createOtpResult.Success)
+        if (createOtpResult.IsError)
         {
-            return RequestResponse<RegisterUserResponse>.Fail(
-                createOtpResult.Message,
-                createOtpResult.StatusCode,
+            return Result<RegisterUserResponse>.Failure(
                 createOtpResult.Errors);
         }
 
-        var plainOtp = createOtpResult.Data!;
+        var plainOtp = createOtpResult.Value!;
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
@@ -76,7 +80,7 @@ public class RegisterOrchestratorHandler(
                 userId);
         }
 
-        return RequestResponse<RegisterUserResponse>.Created(
+        return Result<RegisterUserResponse>.Success(
             new RegisterUserResponse(userId, normalizedEmail, "Registration successful. Please verify your email."));
     }
 }

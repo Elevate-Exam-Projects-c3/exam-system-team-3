@@ -10,9 +10,9 @@ namespace exam_system.Features.Identity.Register.Handlers;
 
 public class CreateEmailOtpCommandHandler(
     IGenericRepository<EmailVerificationOtp> otpRepo) 
-    : IRequestHandler<CreateEmailOtpCommand, RequestResponse<string>>
+    : IRequestHandler<CreateEmailOtpCommand, Result<string>>
 {
-    public async Task<RequestResponse<string>> Handle(CreateEmailOtpCommand request, CancellationToken cancellationToken)
+    public async Task<Result<string>> Handle(CreateEmailOtpCommand request, CancellationToken cancellationToken)
     {
         var plainOtp = RandomNumberGenerator.GetInt32(100000, 1000000).ToString();
 
@@ -32,7 +32,6 @@ public class CreateEmailOtpCommandHandler(
         };
 
         await otpRepo.AddAsync(otp);
-
-        return RequestResponse<string>.Ok(plainOtp);
+        return Result<string>.Success(plainOtp);
     }
 }

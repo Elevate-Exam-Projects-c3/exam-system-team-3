@@ -6,4 +6,4 @@ namespace exam_system.Features.Identity.VerifyEmailOtp.Orchestrators;
 public record VerifyEmailOtpOrchestrator(
     string Email,
     string Otp
-) : IRequest<RequestResponse<VerifyEmailOtpResponse>>;
+) : IRequest<Result<VerifyEmailOtpResponse>>;

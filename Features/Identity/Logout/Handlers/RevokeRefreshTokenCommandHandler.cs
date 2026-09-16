@@ -9,9 +9,9 @@ namespace exam_system.Features.Identity.Logout.Handlers;
 public class RevokeRefreshTokenCommandHandler(
     IGenericRepository<Domain.Entities.Identity.RefreshToken> refreshTokenRepo,
     IUnitOfWork unitOfWork)
-    : IRequestHandler<RevokeRefreshTokenCommand, RequestResponse<bool>>
+    : IRequestHandler<RevokeRefreshTokenCommand, Result<bool>>
 {
-    public async Task<RequestResponse<bool>> Handle(
+    public async Task<Result<bool>> Handle(
         RevokeRefreshTokenCommand request,
         CancellationToken cancellationToken)
     {
@@ -24,12 +24,12 @@ public class RevokeRefreshTokenCommandHandler(
 
         if (token is null)
         {
-            return RequestResponse<bool>.Ok(true);
+            return Result<bool>.Success(true);
         }
 
         token.IsRevoked = true;
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return RequestResponse<bool>.Ok(true);
+        return Result<bool>.Success(true);
     }
 }

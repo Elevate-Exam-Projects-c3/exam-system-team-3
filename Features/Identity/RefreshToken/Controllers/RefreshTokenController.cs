@@ -30,7 +30,7 @@ public class RefreshTokenController(
         
         var result = await mediator.Send(new RefreshTokenOrchestrator(rawToken),cancellationToken);
         
-        if(result.Success&& refreshTokenCarrier.RawRefreshToken is not null)
+        if(result.IsSuccess&& refreshTokenCarrier.RawRefreshToken is not null)
             {
                 Response.Cookies.Append("refreshToken",refreshTokenCarrier.RawRefreshToken,new CookieOptions
                 {

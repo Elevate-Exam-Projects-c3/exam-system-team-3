@@ -6,4 +6,4 @@ namespace exam_system.Features.Identity.Register.Commands;
 public record CreateUserCommand(
     string FullName, 
     string Email, 
-    string Password) : IRequest<RequestResponse<Guid>>;
+    string Password) : IRequest<Result<Guid>>;

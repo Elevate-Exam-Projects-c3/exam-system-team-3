@@ -14,9 +14,9 @@ public class VerifyEmailOtpOrchestratorHandler(
     IMediator mediator,
     IUnitOfWork unitOfWork,
     ILogger<VerifyEmailOtpOrchestratorHandler> logger)
-    : IRequestHandler<VerifyEmailOtpOrchestrator, RequestResponse<VerifyEmailOtpResponse>>
+    : IRequestHandler<VerifyEmailOtpOrchestrator, Result<VerifyEmailOtpResponse>>
 {
-    public async Task<RequestResponse<VerifyEmailOtpResponse>> Handle(
+    public async Task<Result<VerifyEmailOtpResponse>> Handle(
         VerifyEmailOtpOrchestrator request,
         CancellationToken cancellationToken)
     {
@@ -26,19 +26,19 @@ public class VerifyEmailOtpOrchestratorHandler(
             new GetUserByEmailQuery(normalizedEmail), cancellationToken);
 
         if (user is null)
-            return RequestResponse<VerifyEmailOtpResponse>.Fail(VerifyEmailOtpErrors.UserNotFound);
+            return Result<VerifyEmailOtpResponse>.Failure(VerifyEmailOtpErrors.UserNotFound);
 
         var otp = await mediator.Send(
             new GetActiveOtpQuery(normalizedEmail), cancellationToken);
 
         if (otp is null)
-            return RequestResponse<VerifyEmailOtpResponse>.Fail(VerifyEmailOtpErrors.OtpNotFound);
+            return Result<VerifyEmailOtpResponse>.Failure(VerifyEmailOtpErrors.OtpNotFound);
 
         if (otp.AttemptCount >= 5)
-            return RequestResponse<VerifyEmailOtpResponse>.Fail(VerifyEmailOtpErrors.OtpLocked);
+            return Result<VerifyEmailOtpResponse>.Failure(VerifyEmailOtpErrors.OtpLocked);
 
         if (otp.ExpiresAt < DateTime.UtcNow)
-            return RequestResponse<VerifyEmailOtpResponse>.Fail(VerifyEmailOtpErrors.OtpExpired);
+            return Result<VerifyEmailOtpResponse>.Failure(VerifyEmailOtpErrors.OtpExpired);
 
         var inputHash = Convert.ToHexString(
             SHA256.HashData(Encoding.UTF8.GetBytes(request.Otp)));
@@ -55,14 +55,14 @@ public class VerifyEmailOtpOrchestratorHandler(
             logger.LogWarning(
                 "Failed OTP verification attempt for {Email}", normalizedEmail);
 
-            return RequestResponse<VerifyEmailOtpResponse>.Fail(VerifyEmailOtpErrors.OtpInvalid);
+            return Result<VerifyEmailOtpResponse>.Failure(VerifyEmailOtpErrors.OtpInvalid);
         }
 
         await mediator.Send(new ActivateUserCommand(user.Id), cancellationToken);
         await mediator.Send(new MarkOtpUsedCommand(otp.Id), cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return RequestResponse<VerifyEmailOtpResponse>.Ok(
+        return Result<VerifyEmailOtpResponse>.Success(
             new VerifyEmailOtpResponse(
                 user.Id,
                 user.Email,

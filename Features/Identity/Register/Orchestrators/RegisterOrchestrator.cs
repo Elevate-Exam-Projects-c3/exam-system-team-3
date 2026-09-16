@@ -7,4 +7,4 @@ public record RegisterOrchestrator(
     string FullName,
     string Email,
     string Password
-) : IRequest<RequestResponse<RegisterUserResponse>>;
+) : IRequest<Result<RegisterUserResponse>>;

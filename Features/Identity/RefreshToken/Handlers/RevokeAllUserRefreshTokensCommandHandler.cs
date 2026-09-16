@@ -7,9 +7,9 @@ namespace exam_system.Features.Identity.RefreshToken.Handlers;
 public class RevokeAllUserRefreshTokensCommandHandler(
     IGenericRepository<Domain.Entities.Identity.RefreshToken> refreshTokenRepo,
     IUnitOfWork unitOfWork)
-:IRequestHandler<RevokeAllUserRefreshTokensCommand,RequestResponse<bool>>
+:IRequestHandler<RevokeAllUserRefreshTokensCommand, Result<bool>>
 {
-    public async Task<RequestResponse<bool>> Handle(RevokeAllUserRefreshTokensCommand request, CancellationToken cancellationToken)
+    public async Task<Result<bool>> Handle(RevokeAllUserRefreshTokensCommand request, CancellationToken cancellationToken)
     {
         var tokens = await refreshTokenRepo
             .Get(t => t.UserId == request.UserId && !t.IsRevoked)
@@ -22,7 +22,7 @@ public class RevokeAllUserRefreshTokensCommandHandler(
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return RequestResponse<bool>.Ok(true);
+        return Result<bool>.Success(true);
 
     }
 }

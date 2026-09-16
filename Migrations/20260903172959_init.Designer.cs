@@ -13,7 +13,7 @@ namespace exam_system.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     [Migration("20260903172959_init")]
-    partial class init
+    partial class InitializationOptions
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
