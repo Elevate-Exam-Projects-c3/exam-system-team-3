@@ -20,6 +20,6 @@ public sealed class UpdateDiplomaCommandHandler(IGenericRepository<Diploma> dipl
         diploma.UpdatedAt = DateTime.UtcNow;
         diplomaRepository.Update(diploma);
         await unitOfWork.SaveChangesAsync(cancellationToken);
-        return Result<Updated>.Success(Result.Updated);
+        return Result.Updated;
     }
 }
