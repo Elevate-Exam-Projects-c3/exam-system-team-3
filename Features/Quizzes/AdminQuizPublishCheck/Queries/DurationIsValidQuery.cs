@@ -1,5 +1,5 @@
-﻿using exam_system.Domain.Entities.Quizzes;
+﻿using exam_system.Features.Quizzes.AdminQuizPublishCheck.DTOs;
 
 namespace exam_system.Features.Quizzes.AdminQuizPublishCheck.Commands;
 
-public sealed record DurationIsValidQuery(Quiz Quiz) : IRequest<bool>;
+public sealed record DurationIsValidQuery(PublishCheckData Data) : IRequest<bool>;
