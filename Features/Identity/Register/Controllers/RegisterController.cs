@@ -2,14 +2,13 @@
 using exam_system.Features.Identity.Register.DTOs.Request;
 using exam_system.Features.Identity.Register.DTOs.Response;
 using exam_system.Features.Identity.Register.Orchestrators;
-using exam_system.Features.Shared;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+
 
 namespace exam_system.Features.Identity.Register.Controllers;
 
 [ApiController]
 [Route("api/identity")]
+[Tags("Identity")]
 public class RegisterController(IMediator mediator ) : ControllerBase
 {
     [AllowAnonymous]
@@ -22,7 +21,7 @@ public class RegisterController(IMediator mediator ) : ControllerBase
             (request.FullName, request.Email,request.Password);
         
         var result = await mediator.Send(orchestrator, cancellationToken);
-        var response = result.ToApiResponse();  
+        var response = result.ToApiResponse( StatusCodes.Status201Created);  
         
         return StatusCode(response.StatusCode, response);
     }

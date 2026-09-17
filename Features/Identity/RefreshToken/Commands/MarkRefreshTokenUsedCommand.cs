@@ -4,4 +4,4 @@ namespace exam_system.Features.Identity.RefreshToken.Commands;
 
 public record MarkRefreshTokenUsedCommand(
     Guid TokenId
-    ): IRequest<Result<bool>>;
+    ): IRequest<Result<Updated>>;

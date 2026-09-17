@@ -1,22 +1,18 @@
-﻿using exam_system.Features.Shared.Results;
+﻿
 
 namespace exam_system.Features.Shared;
 
 public static class ApiResponseExtensions
 {
-    public static ApiResponse<T> ToApiResponse<T>(this Result<T> result)
+    public static ApiResponse<T> ToApiResponse<T>(this Result<T> result,
+        int successStatusCode = StatusCodes.Status200OK)
     {
         if (result.IsSuccess)
         {
-            var statusCode = result.Value switch
-            {
-                Created => StatusCodes.Status201Created,
-                _ => StatusCodes.Status200OK
-            };
 
             return ApiResponse<T>.Ok(
                 result.Value,
-                statusCode: statusCode);
+                statusCode: successStatusCode);
         }
 
         var topError = result.TopError;

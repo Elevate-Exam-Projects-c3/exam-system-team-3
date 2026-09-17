@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace exam_system.Features.Identity.RefreshToken.Controllers;
 [ApiController]
 [Route("api/identity")]
+[Tags("Identity")]
 public class RefreshTokenController(
     IMediator mediator,
     IRefreshTokenCarrier refreshTokenCarrier

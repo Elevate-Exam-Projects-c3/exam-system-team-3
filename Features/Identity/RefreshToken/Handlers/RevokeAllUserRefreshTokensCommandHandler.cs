@@ -1,15 +1,14 @@
 ﻿using exam_system.Features.Identity.RefreshToken.Commands;
-using exam_system.Features.Shared;
-using exam_system.Persistence.DataAccess;
+
 
 namespace exam_system.Features.Identity.RefreshToken.Handlers;
 
 public class RevokeAllUserRefreshTokensCommandHandler(
     IGenericRepository<Domain.Entities.Identity.RefreshToken> refreshTokenRepo,
     IUnitOfWork unitOfWork)
-:IRequestHandler<RevokeAllUserRefreshTokensCommand, Result<bool>>
+:IRequestHandler<RevokeAllUserRefreshTokensCommand, Result<Updated>>
 {
-    public async Task<Result<bool>> Handle(RevokeAllUserRefreshTokensCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Updated>> Handle(RevokeAllUserRefreshTokensCommand request, CancellationToken cancellationToken)
     {
         var tokens = await refreshTokenRepo
             .Get(t => t.UserId == request.UserId && !t.IsRevoked)
@@ -22,7 +21,7 @@ public class RevokeAllUserRefreshTokensCommandHandler(
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return Result<bool>.Success(true);
+        return Result<Updated>.Success(Result.Updated);
 
     }
 }

@@ -7,6 +7,7 @@ namespace exam_system.Features.Identity.Logout.Controllers;
 
 [ApiController]
 [Route("api/identity")]
+[Tags("Identity")]
 public class LogoutController(IMediator mediator) : ControllerBase
 {
     [AllowAnonymous]
