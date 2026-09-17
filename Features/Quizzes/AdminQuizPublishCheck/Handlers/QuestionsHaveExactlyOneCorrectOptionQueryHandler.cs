@@ -6,9 +6,8 @@ public class QuestionsHaveExactlyOneCorrectOptionQueryHandler : IRequestHandler<
 {
     public Task<bool> Handle(QuestionsHaveExactlyOneCorrectOptionQuery request, CancellationToken cancellationToken)
     {
-        var isValid = request.Quiz.Questions.All(
-            question => question.Options.Count(option => option.IsCorrect) == 1);
-
+        var isValid = request.Data.CorrectOptionsCountPerQuestion
+                      .All(correctOptionsCount => correctOptionsCount == 1);
         return Task.FromResult(isValid);
     }
 }

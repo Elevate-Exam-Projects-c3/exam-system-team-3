@@ -6,7 +6,7 @@ public class PassScoreIsValidQueryHandler : IRequestHandler<PassScoreIsValidQuer
 {
     public Task<bool> Handle(PassScoreIsValidQuery request, CancellationToken cancellationToken)
     {
-        var isValid = request.Quiz.PassScore is >= 0 and <= 100;
+        var isValid = request.Data.PassScore is >= 0 and <= 100;
 
         return Task.FromResult(isValid);
     }
