@@ -2,6 +2,7 @@
 using exam_system.Features.Enrollments.EnrollInDiploma.Commands;
 using exam_system.Features.Enrollments.EnrollInDiploma.Queries;
 using exam_system.Features.Shared.Interfaces;
+using exam_system.Features.Shared.Queries;
 
 namespace exam_system.Features.Enrollments.EnrollInDiploma.Orchestrator;
 
@@ -10,7 +11,12 @@ public sealed class EnrollInDiplomaOrchestratorHandler(ICurrentUser currentUser,
 {
     public async Task<Result<Guid>> Handle(EnrollInDiplomaOrchestrator request, CancellationToken cancellationToken)
     {
-        var studentId = currentUser.UserId;
+        var userId = currentUser.UserId;
+
+        if (userId is null)
+            return EnrollmentErrors.Unauthorized;
+
+        var studentId = await sender.Send(new GetStudentIdByUserIdQuery(userId.Value),cancellationToken);
 
         if (studentId is null)
             return EnrollmentErrors.Unauthorized;
