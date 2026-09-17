@@ -1,6 +1,7 @@
 ﻿using exam_system.Features.Diplomas.EnrollDiploma.Queries;
 using exam_system.Features.Enrollments.EnrollInDiploma.Commands;
 using exam_system.Features.Enrollments.EnrollInDiploma.Queries;
+using exam_system.Features.Shared.Interfaces;
 
 namespace exam_system.Features.Enrollments.EnrollInDiploma.Orchestrator;
 

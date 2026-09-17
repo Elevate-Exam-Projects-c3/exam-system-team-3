@@ -1,4 +1,6 @@
-﻿namespace exam_system.Features.Diplomas.GetDiplomaDetail.Queries;
+﻿using exam_system.Features.Shared.Interfaces;
+
+namespace exam_system.Features.Shared;
 
 public class GetCurrentUser(IHttpContextAccessor httpContextAccessor) : ICurrentUser
 {

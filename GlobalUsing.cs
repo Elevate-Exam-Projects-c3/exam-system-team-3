@@ -1,5 +1,4 @@
 ﻿global using exam_system.Common.Enums;
-global using exam_system.Common.Interfaces;
 global using exam_system.Domain.Common;
 global using exam_system.Features.Diplomas.GetDiplomaDetail.Queries;
 global using exam_system.Features.Shared;

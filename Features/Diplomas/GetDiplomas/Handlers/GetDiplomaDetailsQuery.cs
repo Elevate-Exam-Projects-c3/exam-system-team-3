@@ -1,15 +1,16 @@
 ﻿using exam_system.Domain.Entities.Diplomas;
 using exam_system.Features.Diplomas.GetDiplomaDetail.DTOs;
+using exam_system.Features.Shared.Interfaces;
 
 namespace exam_system.Features.Diplomas.GetDiplomas.Handlers;
 
-public class GetDiplomaDetailsQueryHandler(IGenericRepository<Diploma> genericRepository,ICurrentUser currentUser)
+public class GetDiplomaDetailsQueryHandler(IGenericRepository<Diploma> genericRepository, ICurrentUser currentUser)
                                           : IRequestHandler<GetDiplomaDetailsQuery, Result<DiplomaDetailsResponse>>
 {
     public async Task<Result<DiplomaDetailsResponse>> Handle(GetDiplomaDetailsQuery request, CancellationToken cancellationToken)
     {
         if (currentUser.UserId is not { } studentId)
-            return Error.Unauthorized( "Student.Unauthorized", "Authenticated student identity could not be resolved.");
+            return Error.Unauthorized("Student.Unauthorized", "Authenticated student identity could not be resolved.");
         var diploma = await genericRepository
            .GetAll()
            .AsNoTracking()
@@ -40,7 +41,7 @@ public class GetDiplomaDetailsQueryHandler(IGenericRepository<Diploma> genericRe
                    .ToList())).FirstOrDefaultAsync(cancellationToken);
 
         if (diploma is null)
-            return Error.NotFound( "Diploma.NotFound", "Diploma was not found.");
+            return Error.NotFound("Diploma.NotFound", "Diploma was not found.");
 
         return diploma;
     }
