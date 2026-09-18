@@ -2,7 +2,7 @@
 
 namespace exam_system.Features.Attempts.GetAttemptResults.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Student")]
     [ApiController]
     [Route("api/attempts")]
     public class GetAttemptResultsController(IMediator _mediator) : ControllerBase 

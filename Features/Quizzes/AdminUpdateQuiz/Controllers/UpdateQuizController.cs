@@ -1,6 +1,5 @@
 ﻿using exam_system.Features.Quizzes.AdminUpdateQuiz.DTO;
 using exam_system.Features.Quizzes.AdminUpdateQuiz.Orchestrators;
-using exam_system.Features.Quizzes.AdminUpdateQuiz.Orchestrators.exam_system.Features.Quizzes.AdminUpdateQuiz.Orchestrators;
 using exam_system.Features.Shared;
 using exam_system.Features.Shared.Results;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +8,7 @@ namespace exam_system.Features.Quizzes.AdminUpdateQuiz.Controllers
 {
     [ApiController]
     [Route("api/admin/quizzes")]
+    [Authorize(Roles = "Admin")]
     public class UpdateQuizController(IMediator _mediator) : ControllerBase
     {
         [HttpPut("{quizId:guid}")]

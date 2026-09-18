@@ -1,5 +1,6 @@
 using exam_system.Common;
 using exam_system.Domain.Entities.Diplomas;
+using exam_system.Features.Attempts.SubmitAttempt.Shared;
 using exam_system.Persistence;
 using exam_system.Persistence.Context;
 using exam_system.Persistence.DataAccess;
@@ -13,6 +14,11 @@ builder.Services.AddPersistenceServices(builder.Configuration);
 builder.Services.AddFeatureServices();
 builder.Services.AddInfrastructureServices();
 builder.Services.AddCommonServices(builder.Configuration);
+
+builder.Services.AddScoped<
+    IAttemptFinalizationService,
+    AttemptFinalizationService>();
+
 var app = builder.Build();
 
 app.UseExceptionHandler();

@@ -1,26 +1,22 @@
 ﻿using exam_system.Features.Questions.AdminUpdateQuestion.Orchestrators;
 using exam_system.Features.Questions.AdminUpdateQuestion.ViewModels;
-using Microsoft.AspNetCore.Mvc;
 
 namespace exam_system.Features.Questions.AdminUpdateQuestion.Controllers
 {
     [Authorize(Roles = "Admin")]
     [ApiController]
-    [Route("api/admin/quizzes/{quizId:guid}/questions")]
-    public class AdminUpdateQuestionController(IMediator _mediator)
+    [Route(
+    "api/admin/quizzes/{quizId:guid}/questions/{questionId:guid}/options")]
+    public class AdminQuestionOptionsController(IMediator _mediator)
     : ControllerBase
     {
-        [HttpPut("{questionId:guid}")]
-        public async Task<IActionResult> Update(
-            Guid quizId,
-            Guid questionId,
-            [FromBody] UpdateQuestionRequest request,
-            CancellationToken cancellationToken)
+        [HttpPut("{optionId:guid}")]
+        public async Task<IActionResult> Update(Guid quizId,Guid questionId,Guid optionId,[FromBody] UpdateQuestionOptionRequest request,CancellationToken cancellationToken)
         {
-            var result = await _mediator.Send(
-                new UpdateQuestionOrchestrator(
+            var result = await _mediator.Send(new UpdateQuestionOptionOrchestrator(
                     quizId,
                     questionId,
+                    optionId,
                     request),
                 cancellationToken);
 

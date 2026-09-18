@@ -6,7 +6,7 @@ namespace exam_system.Features.Questions.AdminCreateQuestion.Controllers
 {
     
     [ApiController]
-    [Route("api/admin/quizzes/{quizId:guid}/questions")]
+    [Route("api/admin/Questions")]
     public class AdminQuestionsCreateController(IMediator _mediator) : ControllerBase
     {
         [HttpPost]

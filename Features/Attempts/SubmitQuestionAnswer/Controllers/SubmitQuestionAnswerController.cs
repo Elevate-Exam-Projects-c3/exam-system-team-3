@@ -3,7 +3,9 @@ using exam_system.Features.Attempts.SubmitQuestionAnswer.ViewModels;
 
 namespace exam_system.Features.Attempts.SubmitQuestionAnswer.Controllers
 {
-    
+    [ApiController]
+    [Route("api/admin/quizzes")]
+    [Authorize(Roles = "Student")]
     public class SubmitQuestionAnswerController(IMediator _mediator) : ControllerBase
     {
         

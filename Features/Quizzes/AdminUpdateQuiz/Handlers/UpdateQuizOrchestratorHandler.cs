@@ -1,8 +1,7 @@
 ﻿using exam_system.Common.Queries;
 using exam_system.Features.Quizzes.AdminUpdateQuiz.Commands;
-using exam_system.Features.Quizzes.AdminUpdateQuiz.Orchestrators.exam_system.Features.Quizzes.AdminUpdateQuiz.Orchestrators;
-using exam_system.Features.Quizzes.AdminUpdateQuiz.Queries;
-using exam_system.Features.Shared.Results;
+using exam_system.Features.Quizzes.AdminUpdateQuiz.Orchestrators;
+
 
 namespace exam_system.Features.Quizzes.AdminUpdateQuiz.Handlers
 {

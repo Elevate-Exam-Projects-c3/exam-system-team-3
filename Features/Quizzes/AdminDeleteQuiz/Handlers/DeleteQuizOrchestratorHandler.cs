@@ -1,8 +1,7 @@
 ﻿using exam_system.Common.Enums;
+using exam_system.Common.Queries;
 using exam_system.Features.Quizzes.AdminDeleteQuiz.Commands;
 using exam_system.Features.Quizzes.AdminDeleteQuiz.Orchestrators;
-using exam_system.Features.Quizzes.AdminUpdateQuiz.Queries;
-using exam_system.Features.Shared.Results;
 
 namespace exam_system.Features.Quizzes.AdminDeleteQuiz.Handlers
 {

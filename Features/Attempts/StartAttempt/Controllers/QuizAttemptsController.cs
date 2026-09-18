@@ -3,7 +3,8 @@
 namespace exam_system.Features.Attempts.StartAttempt.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/admin/quizzes")]
+    [Authorize]
     public class QuizAttemptsController(IMediator _mediator) : ControllerBase
     {
         [HttpPost("quizzes/{quizId:guid}/attempts")]

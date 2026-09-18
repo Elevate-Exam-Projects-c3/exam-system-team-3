@@ -6,6 +6,7 @@ namespace exam_system.Features.Quizzes.AdminDeleteQuiz.Controllers
 {
     [ApiController]
     [Route("api/admin/quizzes")]
+    [Authorize(Roles = "Admin")]
     public class AdminDeleteQuizzesController(IMediator _mediator) : ControllerBase
     {
         [HttpDelete("{id:guid}")]
@@ -31,7 +32,7 @@ namespace exam_system.Features.Quizzes.AdminDeleteQuiz.Controllers
                             error)
                 };
             }
-            return StatusCode(StatusCodes.Status201Created, result.Value);
+            return NoContent();
         }
     }
 }

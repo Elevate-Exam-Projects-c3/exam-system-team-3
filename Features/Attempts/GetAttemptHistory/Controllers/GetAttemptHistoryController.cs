@@ -1,18 +1,23 @@
 ﻿using exam_system.Features.Attempts.GetAttemptHistory.Queries;
+using exam_system.Features.Attempts.GetAttemptHistory.ViewModels;
+using exam_system.Features.Diplomas.AdminCreateDiploma.DTOS;
 
 namespace exam_system.Features.Attempts.GetAttemptHistory.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Student")]
     [ApiController]
     [Route("api/attempts")]
     public class GetAttemptHistoryController(IMediator _mediator) : ControllerBase 
     {         
         [HttpGet("history")]
-        public async Task<IActionResult> GetAttemptHistory(CancellationToken cancellationToken) 
+        public async Task<ActionResult<ApiResponse<PaginatedResult<AttemptHistoryItemViewModel>>>> GetAttemptHistory([FromQuery] int pageIndex = 1,
+                                                        [FromQuery] int pageSize = 10,
+                                                        CancellationToken cancellationToken = default) 
         {
             var studentId = GetStudentId(); 
-            var result = await _mediator.Send(new GetAttemptHistoryQuery(studentId), cancellationToken); 
-            return Ok(result);
+            var result = await _mediator.Send(new GetAttemptHistoryQuery(studentId, pageIndex, pageSize), cancellationToken);
+            var apiResponse = result.ToApiResponse();
+            return StatusCode(apiResponse.StatusCode, apiResponse);
         }
             private Guid GetStudentId() 
             {

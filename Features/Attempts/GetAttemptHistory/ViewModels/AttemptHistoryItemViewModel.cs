@@ -10,5 +10,6 @@
         public DateTime Deadline { get; set; } 
         public DateTime? SubmittedAt { get; set; } 
         public double? Score { get; set; } 
-        public bool? Passed { get; set; } }
+        public bool? Passed { get; set; } 
+    }
 }

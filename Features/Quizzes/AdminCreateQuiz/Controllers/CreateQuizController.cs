@@ -9,6 +9,7 @@ namespace exam_system.Features.Quizzes.AdminCreateQuiz.Controllers
 {
     [ApiController]
     [Route("api/admin/quizzes")]
+    [Authorize(Roles = "Admin")]
     public class CreateQuizController(IMediator _mediator) : ControllerBase
     {
         [HttpPost]

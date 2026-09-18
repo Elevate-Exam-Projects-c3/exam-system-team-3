@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace exam_system.Features.Questions.AdminDeleteQuestion.Controllers
 {
     [ApiController]
+    [Route("api/admin/Questions")]
+    [Authorize(Roles = "Admin")]
     public class AdminDeleteQuestionController(IMediator _mediator) : ControllerBase
     {
         [HttpDelete("{questionId:guid}")]

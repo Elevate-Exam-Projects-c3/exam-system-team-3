@@ -6,19 +6,30 @@ using exam_system.Persistence.DataAccess;
 
 namespace exam_system.Features.Questions.AdminUpdateQuestion.Handlers
 {
-    public class UpdateQuestionOptionCommandHandler(IGenericRepository<QuestionOption> _optionRepo) : IRequestHandler<UpdateQuestionOptionCommand,Result<Guid>>
+    public sealed class UpdateQuestionOptionCommandHandler
+    : IRequestHandler<
+        UpdateQuestionOptionCommand,
+        Result<Guid>>
     {
-        public async Task<Result<Guid>> Handle(UpdateQuestionOptionCommand request,CancellationToken cancellationToken)
+        private readonly IGenericRepository<QuestionOption> _optionRepository;
+
+        public UpdateQuestionOptionCommandHandler(
+            IGenericRepository<QuestionOption> optionRepository)
         {
-            var option = request.Option;
-            var data = request.Request;
+            _optionRepository = optionRepository;
+        }
 
-            option.OptionText = data.OptionText.Trim();
-            option.IsCorrect = data.IsCorrect;
+        public async Task<Result<Guid>> Handle(
+            UpdateQuestionOptionCommand request,
+            CancellationToken cancellationToken)
+        {
+            request.Option.OptionText = request.Request.OptionText;
+            request.Option.IsCorrect = request.Request.IsCorrect;
 
-            await _optionRepo.SaveChangesAsync(cancellationToken);
+            await _optionRepository.SaveChangesAsync(
+                cancellationToken);
 
-            return Result<Guid>.Success(option.Id);
+            return Result<Guid>.Success(request.Option.Id);
         }
     }
 }
