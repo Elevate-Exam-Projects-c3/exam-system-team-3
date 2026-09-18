@@ -6,8 +6,7 @@ public class HasQuestionsQueryHandler : IRequestHandler<HasQuestionsQuery, bool>
 {
     public Task<bool> Handle(HasQuestionsQuery request, CancellationToken cancellationToken)
     {
-        var hasQuestions = request.Quiz.Questions.Any();
-
+        var hasQuestions = request.Data.QuestionsCount > 0;
         return Task.FromResult(hasQuestions);
     }
 }

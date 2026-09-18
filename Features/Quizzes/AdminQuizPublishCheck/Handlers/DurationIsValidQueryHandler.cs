@@ -6,7 +6,7 @@ public class DurationIsValidQueryHandler : IRequestHandler<DurationIsValidQuery,
 {
     public Task<bool> Handle(DurationIsValidQuery request, CancellationToken cancellationToken)
     {
-        var isValid = request.Quiz.DurationMinutes > 0;
+        var isValid = request.Data.DurationMinutes > 0;
 
         return Task.FromResult(isValid);
     }
