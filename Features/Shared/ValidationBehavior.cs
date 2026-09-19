@@ -1,4 +1,4 @@
-﻿namespace exam_system.Features.Shared.Behaviors;
+﻿namespace exam_system.Features.Shared;
 
 public sealed class ValidationBehavior<TRequest, TResponse>(
     IEnumerable<IValidator<TRequest>> validators)
