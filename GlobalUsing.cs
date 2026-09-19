@@ -2,7 +2,7 @@
 global using exam_system.Domain.Common;
 global using exam_system.Features.Diplomas.GetDiplomaDetail.Queries;
 global using exam_system.Features.Shared;
-global using exam_system.Features.Shared.Behaviors;
+global using exam_system.Features.Shared;
 global using exam_system.Features.Shared.Results;
 global using exam_system.Persistence.Context;
 global using exam_system.Persistence.DataAccess;
