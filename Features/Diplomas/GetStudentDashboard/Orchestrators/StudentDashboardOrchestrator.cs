@@ -1,3 +1,5 @@
-﻿namespace exam_system.Features.Diplomas.GetStudentDashboard.Orchestrators;
+﻿using exam_system.Features.Diplomas.GetStudentDashboard.DTOs.Response;
 
-public record StudentDashboardOrchestrator();
+namespace exam_system.Features.Diplomas.GetStudentDashboard.Orchestrators;
+
+public record StudentDashboardOrchestrator(Guid UserId) : IRequest<Result<StudentDashboardResponse>>;
