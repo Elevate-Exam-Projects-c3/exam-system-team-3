@@ -11,7 +11,7 @@ namespace exam_system.Features.Questions.AdminUpdateQuestion.Controllers
     : ControllerBase
     {
         [HttpPut("{optionId:guid}")]
-        public async Task<IActionResult> Update(Guid quizId,Guid questionId,Guid optionId,[FromBody] UpdateQuestionOptionRequest request,CancellationToken cancellationToken)
+        public async Task<ActionResult> Update(Guid quizId,Guid questionId,Guid optionId,[FromBody] UpdateQuestionOptionRequest request,CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(new UpdateQuestionOptionOrchestrator(
                     quizId,
@@ -20,12 +20,9 @@ namespace exam_system.Features.Questions.AdminUpdateQuestion.Controllers
                     request),
                 cancellationToken);
 
-            if (!result.IsSuccess)
-            {
-                return BadRequest(result);
-            }
+            var apiResponse = result.ToApiResponse();
 
-            return Ok(result.Value);
+            return StatusCode(apiResponse.StatusCode, apiResponse);
         }
     }
 }

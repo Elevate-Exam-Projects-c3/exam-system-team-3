@@ -1,42 +1,42 @@
 ﻿using exam_system.Features.Attempts.StartAttempt.Orchestrators;
+using exam_system.Features.Shared.Interfaces;
+using exam_system.Features.Shared.Queries;
 
 namespace exam_system.Features.Attempts.StartAttempt.Controllers
 {
     [ApiController]
     [Route("api/admin/quizzes")]
     [Authorize]
-    public class QuizAttemptsController(IMediator _mediator) : ControllerBase
+    public class QuizAttemptsController(IMediator _mediator, ICurrentUser currentUser) : ControllerBase
     {
         [HttpPost("quizzes/{quizId:guid}/attempts")]
-        public async Task<IActionResult> StartAttempt(Guid quizId,CancellationToken cancellationToken)
+        public async Task<ActionResult> StartAttempt(Guid quizId,CancellationToken cancellationToken)
         {
-            var studentId = GetStudentId();
+            if (!currentUser.UserId.HasValue)
+            {
+                throw new UnauthorizedAccessException(
+                    "User ID was not found in the authentication token.");
+            }
+
+            var studentId = await _mediator.Send(new GetStudentIdByUserIdQuery(currentUser.UserId.Value), cancellationToken);
+
+            if (!studentId.HasValue)
+            {
+                throw new UnauthorizedAccessException(
+                    "Student was not found for the authenticated user.");
+            }
 
             var result = await _mediator.Send(
                 new StartAttemptOrchestrator(
                     quizId,
-                    studentId),
+                    studentId.Value),
                 cancellationToken);
 
-            if (!result.IsSuccess)
-            {
-                return BadRequest(result);
-            }
+            var apiResponse = result.ToApiResponse();
 
-            return Ok(result.Value);
+            return StatusCode(apiResponse.StatusCode, apiResponse);
         }
 
-        private Guid GetStudentId()
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            if (string.IsNullOrWhiteSpace(userId))
-            {
-                throw new UnauthorizedAccessException(
-                    "Student identity was not found.");
-            }
-
-            return Guid.Parse(userId);
-        }
+        
     }
 }

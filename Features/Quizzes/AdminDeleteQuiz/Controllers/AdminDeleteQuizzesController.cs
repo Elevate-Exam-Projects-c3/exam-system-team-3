@@ -10,29 +10,13 @@ namespace exam_system.Features.Quizzes.AdminDeleteQuiz.Controllers
     public class AdminDeleteQuizzesController(IMediator _mediator) : ControllerBase
     {
         [HttpDelete("{id:guid}")]
-        public async Task<IActionResult> Delete(Guid id,CancellationToken cancellationToken)
+        public async Task<ActionResult> Delete(Guid id,CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(new DeleteQuizOrchestrator(id),cancellationToken);
 
-            if (!result.IsSuccess)
-            {
-                var error = result.Errors.First();
+            var apiResponse = result.ToApiResponse();
 
-                return error.Type switch
-                {
-                    ErrorKind.Conflict => Conflict(error),
-                    ErrorKind.Validation => BadRequest(error),
-                    ErrorKind.NotFound => NotFound(error),
-                    ErrorKind.Unauthorized => Unauthorized(error),
-                    ErrorKind.Forbidden =>
-                        StatusCode(StatusCodes.Status403Forbidden, error),
-                    _ =>
-                        StatusCode(
-                            StatusCodes.Status500InternalServerError,
-                            error)
-                };
-            }
-            return NoContent();
+            return StatusCode(apiResponse.StatusCode, apiResponse);
         }
     }
 }

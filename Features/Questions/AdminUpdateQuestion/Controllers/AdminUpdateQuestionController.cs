@@ -7,29 +7,20 @@ namespace exam_system.Features.Questions.AdminUpdateQuestion.Controllers
     [Authorize(Roles = "Admin")]
     [ApiController]
     [Route("api/admin/quizzes/{quizId:guid}/questions")]
-    public class AdminUpdateQuestionController(IMediator _mediator)
-    : ControllerBase
+    public class AdminUpdateQuestionController(IMediator _mediator): ControllerBase
     {
         [HttpPut("{questionId:guid}")]
-        public async Task<IActionResult> Update(
-            Guid quizId,
-            Guid questionId,
-            [FromBody] UpdateQuestionRequest request,
-            CancellationToken cancellationToken)
+        public async Task<ActionResult> Update(Guid quizId,Guid questionId,[FromBody] UpdateQuestionRequest request,CancellationToken cancellationToken)
         {
-            var result = await _mediator.Send(
-                new UpdateQuestionOrchestrator(
+            var result = await _mediator.Send(new UpdateQuestionOrchestrator(
                     quizId,
                     questionId,
                     request),
                 cancellationToken);
 
-            if (!result.IsSuccess)
-            {
-                return BadRequest(result);
-            }
+            var apiResponse = result.ToApiResponse();
 
-            return Ok(result.Value);
+            return StatusCode(apiResponse.StatusCode, apiResponse);
         }
     }
 }

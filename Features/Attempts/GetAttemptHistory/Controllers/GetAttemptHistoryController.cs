@@ -1,32 +1,42 @@
 ﻿using exam_system.Features.Attempts.GetAttemptHistory.Queries;
 using exam_system.Features.Attempts.GetAttemptHistory.ViewModels;
-using exam_system.Features.Diplomas.AdminCreateDiploma.DTOS;
+using exam_system.Features.Shared.Interfaces;
+using exam_system.Features.Shared.Queries;
 
 namespace exam_system.Features.Attempts.GetAttemptHistory.Controllers
 {
     [Authorize(Roles = "Student")]
     [ApiController]
     [Route("api/attempts")]
-    public class GetAttemptHistoryController(IMediator _mediator) : ControllerBase 
-    {         
+    public class GetAttemptHistoryController(IMediator mediator, ICurrentUser currentUser) : ControllerBase
+    {
         [HttpGet("history")]
-        public async Task<ActionResult<ApiResponse<PaginatedResult<AttemptHistoryItemViewModel>>>> GetAttemptHistory([FromQuery] int pageIndex = 1,
-                                                        [FromQuery] int pageSize = 10,
-                                                        CancellationToken cancellationToken = default) 
+        public async Task<ActionResult<ApiResponse<PaginatedResult<AttemptHistoryItemViewModel>>>> GetAttemptHistory([FromQuery] int pageIndex = 1, [FromQuery] int pageSize = 10,
+            CancellationToken cancellationToken = default)
         {
-            var studentId = GetStudentId(); 
-            var result = await _mediator.Send(new GetAttemptHistoryQuery(studentId, pageIndex, pageSize), cancellationToken);
+            if (!currentUser.UserId.HasValue)
+            {
+                throw new UnauthorizedAccessException(
+                    "User ID was not found in the authentication token.");
+            }
+
+            var studentId = await mediator.Send(new GetStudentIdByUserIdQuery(currentUser.UserId.Value), cancellationToken);
+
+            if (!studentId.HasValue)
+            {
+                throw new UnauthorizedAccessException(
+                    "Student was not found for the authenticated user.");
+            }
+
+            var result = await mediator.Send(new GetAttemptHistoryQuery(
+                    studentId.Value,
+                    pageIndex,
+                    pageSize),
+                cancellationToken);
+
             var apiResponse = result.ToApiResponse();
+
             return StatusCode(apiResponse.StatusCode, apiResponse);
         }
-            private Guid GetStudentId() 
-            {
-               var studentId = User.FindFirst("sub")?.Value; 
-               if (!Guid.TryParse(studentId, out var id)) 
-               { 
-                  throw new UnauthorizedAccessException("Student ID was not found in the authentication token.");
-               } 
-               return id; 
-        } 
     }
 }

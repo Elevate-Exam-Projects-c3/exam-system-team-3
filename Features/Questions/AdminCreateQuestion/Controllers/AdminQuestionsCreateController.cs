@@ -10,21 +10,18 @@ namespace exam_system.Features.Questions.AdminCreateQuestion.Controllers
     public class AdminQuestionsCreateController(IMediator _mediator) : ControllerBase
     {
         [HttpPost]
-        public async Task<IActionResult> Create(Guid quizId,[FromBody] CreateQuestionRequest request,CancellationToken cancellationToken)
+        public async Task<ActionResult> Create(Guid quizId,[FromBody] CreateQuestionRequest request,CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(new CreateQuestionOrchestrator(
                     quizId,
                     request),
                 cancellationToken);
 
-            if (!result.IsSuccess)
-            {
-                return BadRequest(result);
-            }
+            var apiResponse = result.ToApiResponse();
 
-            return Created(
-                $"/api/admin/quizzes/{quizId}/questions/{result.Value}",
-                result.Value);
+            return StatusCode(apiResponse.StatusCode, apiResponse);
+
+            
         }
     }
 }
