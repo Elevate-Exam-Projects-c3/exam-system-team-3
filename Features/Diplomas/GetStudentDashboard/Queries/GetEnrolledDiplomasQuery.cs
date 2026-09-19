@@ -1,3 +1,5 @@
-﻿namespace exam_system.Features.Diplomas.GetStudentDashboard.Queries;
+﻿using exam_system.Features.Diplomas.GetStudentDashboard.DTOs.Response;
 
-public record GetEnrolledDiplomasQuery();
+namespace exam_system.Features.Diplomas.GetStudentDashboard.Queries;
+
+public record GetEnrolledDiplomasQuery(Guid StudentId) : IRequest<IReadOnlyList<EnrolledDiplomaItem>>;
