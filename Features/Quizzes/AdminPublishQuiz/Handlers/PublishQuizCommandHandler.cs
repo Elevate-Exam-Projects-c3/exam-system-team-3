@@ -1,4 +1,5 @@
 ﻿using exam_system.Domain.Entities.Quizzes;
+using exam_system.Features.Shared.Results.ErrorCodes;
 
 namespace exam_system.Features.Quizzes.AdminPublishQuiz.Commands;
 
@@ -12,9 +13,7 @@ public sealed class PublishQuizCommandHandler(IGenericRepository<Quiz> quizRepos
             .FirstOrDefaultAsync(cancellationToken);
 
         if (quiz is null)
-            return Error.NotFound(
-                "Quiz_Not_Found",
-                "Quiz was not found.");
+            return QuizErrors.NotFound;
 
         quiz.Status = QuizStatus.Published;
         quiz.PublishedAt = DateTime.UtcNow;
