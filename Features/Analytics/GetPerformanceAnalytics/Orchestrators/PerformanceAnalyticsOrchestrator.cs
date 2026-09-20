@@ -1,3 +1,9 @@
-﻿namespace exam_system.Features.Analytics.GetPerformanceAnalytics.Orchestrators;
+﻿using exam_system.Features.Analytics.GetPerformanceAnalytics.DTOs.Response;
 
-public record PerformanceAnalyticsOrchestrator();
+namespace exam_system.Features.Analytics.GetPerformanceAnalytics.Orchestrators;
+
+public record PerformanceAnalyticsOrchestrator(
+    DateTime? DateFrom,
+    DateTime? DateTo,
+    Guid? DiplomaId
+) : IRequest<Result<PerformanceAnalyticsResponse>>;
