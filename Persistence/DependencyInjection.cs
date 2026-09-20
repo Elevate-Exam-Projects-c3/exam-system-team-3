@@ -39,7 +39,7 @@ public static class DependencyInjection
 
         services.AddExceptionHandler<GlobalExceptionHandler>();
         services.AddProblemDetails();
-
+        services.AddMemoryCache();
         return services;
     }
 }
