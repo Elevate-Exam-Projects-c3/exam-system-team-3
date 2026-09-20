@@ -1,0 +1,3 @@
+﻿namespace exam_system.Features.Analytics.GetPerformanceAnalytics.Orchestrators;
+
+public record PerformanceAnalyticsOrchestrator();
