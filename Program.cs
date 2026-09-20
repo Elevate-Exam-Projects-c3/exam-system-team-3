@@ -2,8 +2,6 @@ using exam_system.Common;
 using exam_system.Domain.Entities.Diplomas;
 using exam_system.Features.Attempts.SubmitAttempt.Shared;
 using exam_system.Persistence;
-using exam_system.Persistence.Context;
-using exam_system.Persistence.DataAccess;
 
 var builder = WebApplication.CreateBuilder(args);
 
