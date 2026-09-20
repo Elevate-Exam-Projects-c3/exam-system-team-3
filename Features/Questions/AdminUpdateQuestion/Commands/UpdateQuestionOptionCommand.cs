@@ -5,5 +5,8 @@ using exam_system.Features.Shared.Results;
 
 namespace exam_system.Features.Questions.AdminUpdateQuestion.Commands
 {
-    public record UpdateQuestionOptionCommand(QuestionOption Option,UpdateQuestionOptionRequest Request) : IRequest<Result<Guid>>;
+    public sealed record UpdateQuestionOptionCommand(
+     QuestionOption Option,
+     UpdateQuestionOptionRequest Request)
+     : IRequest<Result<Guid>>;
 }

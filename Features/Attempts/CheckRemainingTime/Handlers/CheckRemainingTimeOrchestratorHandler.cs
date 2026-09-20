@@ -8,8 +8,7 @@ namespace exam_system.Features.Attempts.CheckRemainingTime.Handlers
     {
         public async Task<Result<RemainingTimeResponse>> Handle(CheckRemainingTimeOrchestrator request,CancellationToken cancellationToken)
         {
-            var result = await _mediator.Send(
-                new CheckRemainingTimeQuery(
+            var result = await _mediator.Send(new CheckRemainingTimeQuery(
                     request.AttemptId,
                     request.StudentId),
                 cancellationToken);

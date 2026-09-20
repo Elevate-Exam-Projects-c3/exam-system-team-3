@@ -1,11 +1,12 @@
-﻿using exam_system.Features.Quizzes.AdminUpdateQuiz.Commands;
+﻿using exam_system.Domain.Entities.Quizzes;
+using exam_system.Features.Quizzes.AdminUpdateQuiz.Commands;
 using exam_system.Features.Shared.Results;
 
 namespace exam_system.Features.Quizzes.AdminUpdateQuiz.Handlers
 {
-    public class UpdateQuizCommandHandler : IRequestHandler<UpdateQuizCommand, Result<Guid>>
+    public class UpdateQuizCommandHandler(IGenericRepository<Quiz> _quizRepo) : IRequestHandler<UpdateQuizCommand, Result<Guid>>
     {
-        public Task<Result<Guid>> Handle(UpdateQuizCommand request, CancellationToken cancellationToken)
+        public async Task<Result<Guid>> Handle(UpdateQuizCommand request, CancellationToken cancellationToken)
         {
             var quiz = request.Quiz;
             var data = request.Request;
@@ -18,7 +19,10 @@ namespace exam_system.Features.Quizzes.AdminUpdateQuiz.Handlers
             quiz.StartDate = data.StartDate;
             quiz.EndDate = data.EndDate;
 
-            return Task.FromResult(Result<Guid>.Success(quiz.Id));
+            await _quizRepo.AddAsync(quiz);
+            await _quizRepo.SaveChangesAsync(cancellationToken);
+
+            return Result<Guid>.Success(quiz.Id);
         }
     }
 }

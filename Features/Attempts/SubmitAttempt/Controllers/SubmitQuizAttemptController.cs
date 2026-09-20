@@ -1,16 +1,17 @@
-﻿using exam_system.Features.Attempts.StartAttempt.Orchestrators;
+﻿using exam_system.Features.Attempts.SubmitAttempt.Orchestrators;
+using exam_system.Features.Attempts.SubmitAttempt.ViewModels;
 using exam_system.Features.Shared.Interfaces;
 using exam_system.Features.Shared.Queries;
 
-namespace exam_system.Features.Attempts.StartAttempt.Controllers
+namespace exam_system.Features.Attempts.SubmitAttempt.Controllers
 {
-    [ApiController]
-    [Route("api/admin/quizzes")]
     [Authorize]
-    public class QuizAttemptsController(IMediator _mediator, ICurrentUser currentUser) : ControllerBase
+    [ApiController]
+    [Route("api/attempts")]
+    public class SubmitQuizAttemptController(IMediator _mediator, ICurrentUser currentUser) : ControllerBase
     {
-        [HttpPost("quizzes/{quizId:guid}/attempts")]
-        public async Task<ActionResult> StartAttempt(Guid quizId,CancellationToken cancellationToken)
+        [HttpPost("{attemptId:guid}/submit")]
+        public async Task<ActionResult<Result<SubmitQuizAttemptResponse>>> SubmitQuizAttempt(Guid attemptId,CancellationToken cancellationToken)
         {
             if (!currentUser.UserId.HasValue)
             {
@@ -26,9 +27,8 @@ namespace exam_system.Features.Attempts.StartAttempt.Controllers
                     "Student was not found for the authenticated user.");
             }
 
-            var result = await _mediator.Send(
-                new StartAttemptOrchestrator(
-                    quizId,
+            var result = await _mediator.Send(new SubmitQuizAttemptOrchestrator(
+                    attemptId,
                     studentId.Value),
                 cancellationToken);
 

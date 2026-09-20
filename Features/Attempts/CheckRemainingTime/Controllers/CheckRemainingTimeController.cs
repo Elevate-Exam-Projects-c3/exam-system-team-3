@@ -1,34 +1,43 @@
-﻿using exam_system.Features.Attempts.CheckRemainingTime.Orchestrators;
+﻿using exam_system.Features.Attempts.CheckRemainingTime.DTOs;
+using exam_system.Features.Attempts.CheckRemainingTime.Orchestrators;
 using exam_system.Features.Attempts.CheckRemainingTime.Queries;
+using exam_system.Features.Shared.Interfaces;
+using exam_system.Features.Shared.Queries;
 
 namespace exam_system.Features.Attempts.CheckRemainingTime.Controllers
 {
     [ApiController]
-    [Route("api/attempts")]
-    public class CheckRemainingTimeController(
-    IMediator _mediator)
-    : ControllerBase
+    [Route("api/admin/quizzes")]
+    [Authorize(Roles = "Student")]
+    public class CheckRemainingTimeController(IMediator _mediator, ICurrentUser currentUser) : ControllerBase
     {
         [HttpGet("{attemptId:guid}/remaining-time")]
-        public async Task<IActionResult> CheckRemainingTime(Guid attemptId,CancellationToken cancellationToken)
+        public async Task<ActionResult<ApiResponse<RemainingTimeResponse>>> CheckRemainingTime(Guid attemptId,CancellationToken cancellationToken)
         {
-            var studentId = GetStudentId();
+            if (!currentUser.UserId.HasValue)
+            {
+                throw new UnauthorizedAccessException(
+                    "User ID was not found in the authentication token.");
+            }
+
+            var studentId = await _mediator.Send(new GetStudentIdByUserIdQuery(currentUser.UserId.Value), cancellationToken);
+
+            if (!studentId.HasValue)
+            {
+                throw new UnauthorizedAccessException(
+                    "Student was not found for the authenticated user.");
+            }
 
             var result = await _mediator.Send(new CheckRemainingTimeOrchestrator(
                     attemptId,
-                    studentId),
+                    studentId.Value),
                 cancellationToken);
 
-            if (!result.IsSuccess)
-                return BadRequest(result);
+            var apiResponse = result.ToApiResponse();
 
-            return Ok(result.Value);
+            return StatusCode(apiResponse.StatusCode, apiResponse);
         }
 
-        private Guid GetStudentId()
-        {
-            // Your existing JWT student-id implementation
-            return Guid.Parse(User.FindFirst("sub")!.Value);
-        }
+       
     }
 }

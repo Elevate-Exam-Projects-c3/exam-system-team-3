@@ -74,10 +74,18 @@ namespace exam_system.Features.Attempts.SubmitQuestionAnswer.Handlers
             // 5. Verify selected option belongs to this question
             // =========================================================
 
-            var selectedOption = await _mediator.Send(new GetQuestionOptionForAnswerQuery(
-                    request.QuestionId,
-                    request.Request.SelectedOptionId!.Value),
-                cancellationToken);
+            if (request.Request.SelectedOptionId is not { } selectedOptionId)
+            {
+                return Result<SubmitQuestionAnswerResponse>.Failure(
+                    Error.Validation("OPTION_REQUIRED", "Selected option is required."));
+            }
+
+            var selectedOption = await _mediator.Send(new GetQuestionOptionForAnswerQuery(request.QuestionId, selectedOptionId), cancellationToken);
+
+            //var selectedOption = await _mediator.Send(new GetQuestionOptionForAnswerQuery(
+            //        request.QuestionId,
+            //        request.Request.SelectedOptionId!.Value),
+            //    cancellationToken);
 
             if (selectedOption is null)
             {
