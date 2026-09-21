@@ -1,5 +1,4 @@
 ﻿using exam_system.Domain.Entities.Identity;
-using exam_system.Features.Dashboard.AdminDashboard.Queries;
 
 namespace exam_system.Features.Dashboard.AdminDashboard.Handlers;
 
