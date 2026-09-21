@@ -7,7 +7,7 @@ namespace exam_system.Features.Attempts.GetAttemptHistory.Controllers
 {
     [Authorize(Roles = "Student")]
     [ApiController]
-    [Route("api/attempts")]
+    [Route("api/students/me/attempts")]
     public class GetAttemptHistoryController(IMediator mediator, ICurrentUser currentUser) : ControllerBase
     {
         [HttpGet("history")]

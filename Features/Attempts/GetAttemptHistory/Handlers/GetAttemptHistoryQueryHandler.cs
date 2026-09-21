@@ -4,7 +4,7 @@ using exam_system.Features.Attempts.GetAttemptHistory.ViewModels;
 
 namespace exam_system.Features.Attempts.GetAttemptHistory.Handlers
 {
-    public class GetAttemptHistoryQueryHandler : IRequestHandler<GetAttemptHistoryQuery, Result<PaginatedResult<AttemptHistoryItemViewModel>>>
+    public sealed class GetAttemptHistoryQueryHandler : IRequestHandler<GetAttemptHistoryQuery,Result<PaginatedResult<AttemptHistoryItemViewModel>>>
     {
         private readonly IGenericRepository<QuizAttempt> _attemptRepository;
 
@@ -14,17 +14,20 @@ namespace exam_system.Features.Attempts.GetAttemptHistory.Handlers
             _attemptRepository = attemptRepository;
         }
 
-        public async Task<Result<PaginatedResult<AttemptHistoryItemViewModel>>> Handle(GetAttemptHistoryQuery request,CancellationToken cancellationToken)
+        public async Task<Result<PaginatedResult<AttemptHistoryItemViewModel>>> Handle(
+            GetAttemptHistoryQuery request,
+            CancellationToken cancellationToken)
         {
             var query = _attemptRepository
                 .Get(x =>
                     x.StudentId == request.StudentId &&
-                    !x.IsDeleted)
-                .OrderByDescending(x => x.StartTime);
+                    !x.IsDeleted);
 
             var totalCount = await query.CountAsync(cancellationToken);
 
             var attempts = await query
+                .OrderByDescending(x =>
+                    x.SubmittedAt ?? x.StartTime)
                 .Skip((request.PageIndex - 1) * request.PageSize)
                 .Take(request.PageSize)
                 .Select(x => new AttemptHistoryItemViewModel
@@ -33,20 +36,21 @@ namespace exam_system.Features.Attempts.GetAttemptHistory.Handlers
                     QuizId = x.QuizId,
                     QuizTitle = x.Quiz.Title,
                     Status = x.Status,
-                    StartTime = x.StartTime,
-                    Deadline = x.Deadline,
-                    SubmittedAt = x.SubmittedAt,
                     Score = x.Score,
-                    Passed = x.Passed
+                    Passed = x.Passed,
+                    StartTime = x.StartTime,
+                    SubmittedAt = x.SubmittedAt
                 })
                 .ToListAsync(cancellationToken);
 
-            return Result<PaginatedResult<AttemptHistoryItemViewModel>>.Success
-                (new PaginatedResult<AttemptHistoryItemViewModel>(attempts,
+            var result = new PaginatedResult<AttemptHistoryItemViewModel>(
+                attempts,
                 totalCount,
                 request.PageIndex,
-                request.PageSize));
-               
+                request.PageSize);
+
+            return Result<PaginatedResult<AttemptHistoryItemViewModel>>.Success(
+                result);
         }
     }
 }
