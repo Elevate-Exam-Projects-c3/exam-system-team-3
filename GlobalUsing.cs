@@ -15,3 +15,4 @@ global using Microsoft.EntityFrameworkCore;
 global using System.Linq.Expressions;
 global using System.Security.Claims;
 global using Microsoft.Extensions.Caching.Memory;
+global using exam_system.Features.Dashboard.AdminDashboard.Queries;
