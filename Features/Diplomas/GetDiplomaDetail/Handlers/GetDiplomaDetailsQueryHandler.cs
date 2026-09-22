@@ -1,51 +1,73 @@
-﻿
-using exam_system.Domain.Entities.Diplomas;
-using exam_system.Features.Diplomas.GetDiplomas.DTOs;
-using exam_system.Features.Diplomas.GetDiplomas.Queries;
+﻿using exam_system.Domain.Entities.Diplomas;
+using exam_system.Features.Diplomas.GetDiplomaDetail.DTOs;
+using exam_system.Features.Diplomas.GetDiplomaDetail.Queries;
 using exam_system.Features.Shared.Interfaces;
-
+using exam_system.Features.Shared.Queries;
 
 namespace exam_system.Features.Diplomas.GetDiplomaDetail.Handlers;
 
-public sealed class GetDiplomaDetailsQueryHandler(IGenericRepository<Diploma> genericRepository,
-    ICurrentUser currentUser) : IRequestHandler<GetDiplomasQuery, Result<PaginatedResult<DiplomaListItemResponse>>>
+public sealed class GetDiplomaDetailsQueryHandler(IGenericRepository<Diploma> genericRepository,ICurrentUser currentUser,ISender sender)
+                                                    : IRequestHandler<GetDiplomaDetailsQuery, Result<DiplomaDetailsResponse>>
 {
-
-    public async Task<Result<PaginatedResult<DiplomaListItemResponse>>> Handle(
-        GetDiplomasQuery request,
-        CancellationToken cancellationToken)
+    public async Task<Result<DiplomaDetailsResponse>> Handle(GetDiplomaDetailsQuery request,CancellationToken cancellationToken)
     {
-        if (currentUser.UserId is not { } studentId)
+        if (currentUser.UserId is not { } userId)
         {
             return Error.Unauthorized(
                 "Student.Unauthorized",
                 "Authenticated student identity could not be resolved.");
         }
 
-        var query = genericRepository.GetAll()
+        var studentId = await sender.Send(new GetStudentIdByUserIdQuery(userId),cancellationToken);
+
+        if (studentId is null)
+        {
+            return Error.Unauthorized(
+                "Student.Unauthorized",
+                "Authenticated student identity could not be resolved.");
+        }
+
+        var diploma = await genericRepository
+            .GetAll()
             .AsNoTracking()
-            .Where(diploma => !diploma.IsDeleted)
-            .Where(diploma => diploma.Quizzes.Any(quiz => !quiz.IsDeleted && quiz.Status == QuizStatus.Published));
-
-        var totalCount = await query.CountAsync(cancellationToken);
-
-        var items = await query
-            .OrderBy(diploma => diploma.Title)
-            .Skip((request.PageIndex - 1) * request.PageSize)
-            .Take(request.PageSize)
-            .Select(diploma => new DiplomaListItemResponse(
+            .Where(diploma =>
+                diploma.Id == request.DiplomaId &&
+                !diploma.IsDeleted &&
+                diploma.Quizzes.Any(quiz =>
+                    !quiz.IsDeleted &&
+                    quiz.Status == QuizStatus.Published))
+            .Select(diploma => new DiplomaDetailsResponse(
                 diploma.Id,
                 diploma.Title,
                 diploma.Description,
-                diploma.Quizzes.Count(quiz => !quiz.IsDeleted && quiz.Status == QuizStatus.Published &&
-                quiz.Attempts.Any(attempt => attempt.StudentId == studentId &&
-                        (
-                            attempt.Status == AttemptStatus.Submitted ||
-                            attempt.Status == AttemptStatus.TimedOut
-                        ))),
-                diploma.Quizzes.Count(quiz => !quiz.IsDeleted && quiz.Status == QuizStatus.Published)))
-                .ToListAsync(cancellationToken);
+                diploma.Quizzes
+                    .Where(quiz =>
+                        !quiz.IsDeleted &&
+                        quiz.Status == QuizStatus.Published)
+                    .Select(quiz => new DiplomaQuizResponse(
+                        quiz.Id,
+                        quiz.Title,
+                        quiz.DurationMinutes,
+                        quiz.PassScore,
+                        quiz.MaxAttempts,
+                        quiz.MaxAttempts == null ||
+                        quiz.Attempts.Count(attempt =>
+                            attempt.StudentId == studentId.Value &&
+                            (attempt.Status == AttemptStatus.Submitted ||
+                             attempt.Status == AttemptStatus.TimedOut))
+                        < quiz.MaxAttempts.Value,
+                        quiz.Attempts.Any(attempt =>
+                            attempt.StudentId == studentId.Value &&
+                            attempt.Status == AttemptStatus.InProgress))).ToList()))
+            .FirstOrDefaultAsync(cancellationToken);
 
-        return new PaginatedResult<DiplomaListItemResponse>(items, totalCount, request.PageIndex, request.PageSize);
+        if (diploma is null)
+        {
+            return Error.NotFound(
+                "Diploma.NotFound",
+                "Diploma was not found.");
+        }
+
+        return diploma;
     }
 }

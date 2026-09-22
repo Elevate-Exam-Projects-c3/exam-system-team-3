@@ -1,7 +1,7 @@
 ﻿global using exam_system.Common.Enums;
 global using exam_system.Domain.Common;
+global using exam_system.Features.Dashboard.AdminDashboard.Queries;
 global using exam_system.Features.Diplomas.GetDiplomaDetail.Queries;
-global using exam_system.Features.Shared;
 global using exam_system.Features.Shared;
 global using exam_system.Features.Shared.Results;
 global using exam_system.Persistence.Context;
@@ -12,7 +12,6 @@ global using MediatR;
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.Caching.Memory;
 global using System.Linq.Expressions;
 global using System.Security.Claims;
-global using Microsoft.Extensions.Caching.Memory;
-global using exam_system.Features.Dashboard.AdminDashboard.Queries;
