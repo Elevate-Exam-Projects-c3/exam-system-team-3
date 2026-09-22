@@ -8,8 +8,11 @@ public class GetStudentIdByUserIdQueryHandler(IGenericRepository<Student> studen
     public async Task<Guid?> Handle(GetStudentIdByUserIdQuery request, CancellationToken cancellationToken)
     {
         return await studentRepository
-            .Get(student => student.UserId == request.UserId)
-            .Select(student => (Guid?)student.Id)
-            .FirstOrDefaultAsync(cancellationToken);
+               .Get(student =>
+                   student.UserId == request.UserId &&
+                   !student.IsDeleted)
+               .AsNoTracking()
+               .Select(student => (Guid?)student.Id)
+               .FirstOrDefaultAsync(cancellationToken);
     }
 }

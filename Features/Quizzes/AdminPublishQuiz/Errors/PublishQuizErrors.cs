@@ -13,4 +13,6 @@ public static class PublishQuizErrors
 
     public static readonly Error InvalidPassScore =
         Error.Validation("Quiz_PassScore_Invalid","Quiz pass score must be between 0 and 100.");
+    public static readonly Error AlreadyPublished =
+    Error.Conflict("Quiz_Already_Published", "Quiz is already published.");
 }

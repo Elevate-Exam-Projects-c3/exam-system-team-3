@@ -14,6 +14,8 @@ public sealed class PublishQuizCommandHandler(IGenericRepository<Quiz> quizRepos
 
         if (quiz is null)
             return QuizErrors.NotFound;
+        if (quiz.Status == QuizStatus.Published)
+            return PublishQuizErrors.AlreadyPublished;
 
         quiz.Status = QuizStatus.Published;
         quiz.PublishedAt = DateTime.UtcNow;
